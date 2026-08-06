@@ -1,14 +1,15 @@
-import Fastify from "fastify"
-import { logger } from "./config/logger"
+import { buildApp } from "./app"
 import { env } from "./config/env"
 
-const app = Fastify({ loggerInstance: logger })
+const startServer = async () => {
+  try {
+    const app = await buildApp()
 
-app.get("/", async () => {
-  return {
-    status: "ok",
-    timeStamp: new Date().toISOString()
+    await app.listen({ port: env.PORT, host: env.HOST })
+  } catch {
+    process.exit(1)
   }
-})
+}
 
-await app.listen({ port: env.PORT, host: env.HOST })
+
+startServer()
