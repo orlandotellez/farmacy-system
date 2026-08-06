@@ -6,6 +6,7 @@ import rateLimit from "@fastify/rate-limit"
 import cookie from "@fastify/cookie"
 import { logger } from "./config/logger"
 import { corsOptions } from "./config/cors"
+import { errorHandler, notFoundHandler } from "./config/errorHandler"
 
 export const buildApp = async () => {
   const app = fastify({ loggerInstance: logger })
@@ -23,6 +24,10 @@ export const buildApp = async () => {
   })
 
   await app.register(cookie)
+
+  app.setErrorHandler(errorHandler)
+
+  app.setNotFoundHandler(notFoundHandler)
 
   app.get("/api/v1/health", async () => {
     return {
