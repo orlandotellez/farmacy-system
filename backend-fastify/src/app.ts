@@ -7,6 +7,7 @@ import cookie from "@fastify/cookie"
 import { logger } from "./config/logger"
 import { corsOptions } from "./config/cors"
 import { errorHandler, notFoundHandler } from "./config/errorHandler"
+import { routes } from "./http/routes"
 
 export const buildApp = async () => {
   const app = fastify({ loggerInstance: logger })
@@ -35,6 +36,9 @@ export const buildApp = async () => {
       timeStamp: new Date().toISOString()
     }
   })
+
+  app.register(routes, { prefix: '/api/v1' });
+
 
   return app
 }
