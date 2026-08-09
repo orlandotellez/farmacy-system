@@ -11,14 +11,14 @@
 ## Checklist de Tareas DB
 
 ### 1. Tenancy y Usuarios
-- [ ] Crear tabla `store` (raíz multi-tenant, con índice por `name`).
-- [ ] Crear tabla `user` (rol, email_verified, store_id, deleted_at).
-- [ ] Crear enum `ROLE`.
-- [ ] Unique `(store_id, email)` para email único por tienda.
-- [ ] Índices: `email`, `role`, `store_id`, `[store_id, deleted_at]`.
+- [x] Crear tabla `store` (raíz multi-tenant, con índice por `name`).
+- [x] Crear tabla `user` (rol, email_verified, store_id, deleted_at).
+- [x] Crear enum `ROLE`.
+- [x] Unique `(store_id, email)` para email único por tienda.
+- [x] Índices: `email`, `role`, `store_id`, `[store_id, deleted_at]`.
 
 ### 2. Sesiones y Credenciales
-- [ ] Crear tabla `session` (refresh tokens, ip, user_agent, expires_at).
+- [x] Crear tabla `session` (refresh tokens, ip, user_agent, expires_at).
 - [ ] Crear tabla `account` (provider `credentials` con hash bcrypt + campos OAuth).
 - [ ] Crear tabla `verification` (códigos OTP de email/reset).
 

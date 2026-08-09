@@ -11,7 +11,7 @@
 ## Checklist de Tareas Backend
 
 ### 1. Autenticación y JWT
-- [] Implementar `POST /auth/register-store` (crea store + admin + settings + tokens).
+- [x] Implementar `POST /auth/register-store` (crea store + admin + settings + tokens).
 - [] Implementar `POST /auth/login` (verifica bcrypt, emite tokens, registra sesión).
 - [] Implementar `POST /auth/refresh` (rotación de tokens).
 - [] Implementar `POST /auth/logout` (revoca refresh token).

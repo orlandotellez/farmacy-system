@@ -4,7 +4,9 @@ import {
   timestamp,
   uuid,
   boolean,
-  pgEnum
+  pgEnum,
+  index,
+  uniqueIndex
 } from "drizzle-orm/pg-core";
 
 export const userRoleEnum = pgEnum("ROLE", [
@@ -27,7 +29,11 @@ export const store = pgTable("store", {
   updatedAt: timestamp("updated_at", {
     withTimezone: true,
   }).notNull().defaultNow().$onUpdate(() => new Date()),
-});
+},
+  (table) => [
+    index("idx_store_name").on(table.name)
+  ]
+);
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey(),
@@ -47,7 +53,18 @@ export const users = pgTable("users", {
   deletedAt: timestamp("deleted_at", {
     withTimezone: true
   })
-});
+},
+  (table) => [
+    uniqueIndex("uq_users_store_email").on(
+      table.storeId,
+      table.email
+    ),
+    index("idx_users_email").on(table.email),
+    index("idx_users_role").on(table.role),
+    index("idx_users_store_id").on(table.storeId),
+    index("idx_users_store_id_deleted_at").on(table.storeId, table.deletedAt)
+  ]
+);
 
 export const session = pgTable("session", {
   id: uuid("id").primaryKey(),
