@@ -11,7 +11,7 @@ interface TokenPayload {
   storeName: string
 }
 
-export const generateTokens = (userId: string, email: string, role: Role, storeId: string, storeName: string) => {
+export const generateTokens = ({ userId, email, role, storeId, storeName }: TokenPayload) => {
   const accessTokenOptions: SignOptions = {
     expiresIn: 900  // 15 minutos en segundos
   }
@@ -20,8 +20,16 @@ export const generateTokens = (userId: string, email: string, role: Role, storeI
     expiresIn: 604000  // 7 días en segundos
   }
 
+  const tokenPayload: TokenPayload = {
+    userId,
+    email,
+    role,
+    storeId,
+    storeName
+  }
+
   const accessToken = jwt.sign(
-    { userId, email, role, storeId, storeName } as TokenPayload,
+    tokenPayload,
     env.JWT_SECRET,
     accessTokenOptions
   )

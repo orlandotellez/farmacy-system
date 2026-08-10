@@ -1,8 +1,8 @@
-import { ConflictError } from "@/core/errors/AppError";
-import { hashPassword } from "./common/auth.crypto";
+import { ConflictError, UnauthorizedError } from "@/core/errors/AppError";
+import { comparePassword, hashPassword } from "./common/auth.crypto";
 import { generateTokens } from "./common/auth.token";
 import { IAuthRepository } from "../domain/auth.interface";
-import { IRegisterStorePayload, IRegisterStoreResponse } from "../domain/auth.types";
+import { IAuthResponse, ILoginPayload, IRegisterStorePayload, IRegisterStoreResponse, Role } from "../domain/auth.types";
 import { mapUserToResponse } from "./common/auth.mappers";
 
 const SESSION_EXPIRY = 7 * 24 * 60 * 60 * 1000;
@@ -50,13 +50,13 @@ export const createAuthService = (repository: IAuthRepository) => ({
     });
 
     // 4. Generate tokens
-    const { accessToken, refreshToken } = generateTokens(
-      user.id,
-      user.email,
-      user.role,
-      store.id,
-      store.name,
-    );
+    const { accessToken, refreshToken } = generateTokens({
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      storeId: store.id,
+      storeName: store.name,
+    });
 
     // 5. Persist refresh session
     await repository.session.create({
@@ -73,4 +73,59 @@ export const createAuthService = (repository: IAuthRepository) => ({
       refreshToken,
     };
   },
+
+  login: async (data: ILoginPayload): Promise<IAuthResponse> => {
+    const account = await repository.account.findCredentialsAccountByEmail(data.email)
+    if (!account) throw new UnauthorizedError("Invalid credentials")
+
+    if (!account.password) throw new UnauthorizedError("Invalid credentials")
+
+    const isValidPassword = await comparePassword(data.password, account.password)
+    if (!isValidPassword) throw new UnauthorizedError("Invalid credentials")
+
+    const user = await repository.user.findById(account.user_id!)
+    if (!user) throw new UnauthorizedError("User not found")
+
+    if (user.deleted_at) throw new UnauthorizedError("Account has been deactivated")
+
+    const store = await repository.store.getStoreInfo(user.store_id)
+
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens({
+      userId: user.id,
+      email: user.email,
+      role: user.role as Role,
+      storeId: store.id,
+      storeName: store.name
+    })
+
+    await repository.session.create({
+      userId: user.id,
+      token: newRefreshToken,
+      expiresAt: new Date(Date.now() + SESSION_EXPIRY)
+    })
+
+    return {
+      message: "Token refreshed successfully",
+      user: mapUserToResponse(user),
+      store,
+      accessToken,
+      refreshToken: newRefreshToken
+    }
+  }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
