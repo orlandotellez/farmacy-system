@@ -1,31 +1,32 @@
 # Tareas de Backend — Feature 08: Facturación
 
 ## Estado Actual
-- **Módulo invoices** (service sobre Prisma): list, getById, create, cancel.
-- Secuencia `FAC-YYYY-######` con lock de store.
-- Regla: solo ventas `completada`; una factura `emitida` por venta.
+- **Módulo invoices** (service sobre Drizzle): list, getById, create, cancel.
+- Secuencia `FAC-YYYY-######` con lock de store (`SELECT ... FOR UPDATE`).
+- Regla: solo ventas `completada`; una factura `emitida` por venta (409).
 
 ---
 
 ## Checklist de Tareas Backend
 
 ### 1. Emisión
-- [ ] Implementar `GET /invoices` (search, invoice_type, rango, paginación).
-- [ ] Implementar `GET /invoices/:id`.
-- [ ] Implementar `POST /invoices`:
-  - [ ] Validar venta `completada` de la tienda.
-  - [ ] Rechazar si ya existe factura `emitida` (409).
-  - [ ] Generar número secuencial `FAC-<año>-<6 dígitos>` con lock de store.
-  - [ ] Heredar subtotal/total de la venta.
-  - [ ] Registrar `audit_log` (emitir).
+- [x] Implementar `GET /invoices` (search, invoice_type, rango, paginación).
+- [x] Implementar `GET /invoices/:id`.
+- [x] Implementar `POST /invoices`:
+  - [x] Validar venta `completada` de la tienda.
+  - [x] Rechazar si ya existe factura `emitida` (409).
+  - [x] Generar número secuencial `FAC-<año>-<6 dígitos>` con lock de store.
+  - [x] Heredar subtotal/total de la venta.
+  - [ ] Registrar `audit_log` (emitir) — pendiente de la tabla `audit_log` (Feature 11).
 
 ### 2. Anulación
-- [ ] Implementar `POST /invoices/:id/cancel`:
-  - [ ] Solo facturas `emitida` → `anulada`.
-  - [ ] Registrar motivo y `audit_log` (anular).
+- [x] Implementar `POST /invoices/:id/cancel`:
+  - [x] Solo facturas `emitida` → `anulada`.
+  - [x] Registrar motivo.
+  - [ ] Registrar `audit_log` (anular) — pendiente de la tabla `audit_log` (Feature 11).
 
 ### 3. Pendientes / Mejoras
-- [ ] Integración con `sales.cancel`: ya bloqueada la anulación de venta con factura emitida; verificar flujo completo "anular factura → anular venta".
+- [x] Integración con `sales.cancel`: bloqueada la anulación de venta con factura emitida; flujo "anular factura → anular venta" verificado.
 - [ ] Impresión de factura en el frontend (ticket con datos fiscales).
 - [ ] Reimpresión de facturas.
 - [ ] RBAC: solo `cajero|admin` emiten/anulan.

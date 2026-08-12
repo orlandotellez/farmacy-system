@@ -36,9 +36,3 @@ export function mapSaleToResponse(sale: ISaleEntity): ISaleResponse {
   }
 }
 
-export function endOfDay(value: string): Date {
-  const date = new Date(value)
-  date.setHours(23, 59, 59, 999)
-  return date
-}
-

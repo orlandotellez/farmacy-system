@@ -1,8 +1,9 @@
 import { NotFoundError } from "@/core/errors/AppError"
+import { endOfDay } from "@/core/utils/date"
 import type { ISaleRepository } from "../domain/sales.interface"
 import type { CreateSaleData } from "../domain/sales.entities"
 import type { GroupBy, ISaleListResponse, ISaleReport, ISaleResponse, IRevenueTrendItem } from "../domain/sales.types"
-import { endOfDay, mapSaleToResponse } from "./common/sales.mappers"
+import { mapSaleToResponse } from "./common/sales.mappers"
 
 export const createSaleService = (repository: ISaleRepository) => ({
   create: async (data: CreateSaleData, storeId: string): Promise<ISaleResponse> =>

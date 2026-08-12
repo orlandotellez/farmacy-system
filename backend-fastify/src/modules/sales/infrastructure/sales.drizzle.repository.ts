@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { and, asc, count, desc, eq, gte, gt, ilike, inArray, lte, or, sql } from "drizzle-orm";
-import { batch, client, inventoryMovement, medicine, prescription, prescriptionItem, sale, saleItem, users } from "@/db/schema";
+import { batch, client, inventoryMovement, invoice, medicine, prescription, prescriptionItem, sale, saleItem, users } from "@/db/schema";
 import { db } from "@/index";
 import { BadRequestError, NotFoundError } from "@/core/errors/AppError";
 import type { ISaleRepository } from "../domain/sales.interface";
@@ -379,6 +379,22 @@ export const SaleRepository: ISaleRepository = {
         .limit(1);
       if (!current) throw new NotFoundError("Sale not found");
       if (current.status === "anulada") throw new BadRequestError("Sale is already cancelled");
+
+      // Lock the sale row to serialize with invoice emission
+      await tx.execute(sql`
+        SELECT "id"
+        FROM "sale"
+        WHERE "id" = ${id}
+          AND "store_id" = ${storeId}
+        FOR UPDATE
+      `);
+
+      const [emittedInvoice] = await tx
+        .select({ id: invoice.id })
+        .from(invoice)
+        .where(and(eq(invoice.saleId, id), eq(invoice.storeId, storeId), eq(invoice.status, "emitida")))
+        .limit(1);
+      if (emittedInvoice) throw new BadRequestError("Cannot cancel a sale with an emitted invoice; cancel the invoice first");
 
       const items = await tx.select().from(saleItem).where(eq(saleItem.saleId, id));
       const [claimed] = await tx

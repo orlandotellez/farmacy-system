@@ -1,0 +1,38 @@
+@baseUrl = {{host}}/api/v1
+@token = {{authToken}}
+
+### Listar facturas
+GET {{baseUrl}}/invoices
+Authorization: Bearer {{token}}
+
+### Listar facturas con filtros
+GET {{baseUrl}}/invoices?search=FAC&invoice_type=simplificada&page=1&limit=10
+Authorization: Bearer {{token}}
+
+### Detalle de factura
+GET {{baseUrl}}/invoices/{{invoiceId}}
+Authorization: Bearer {{token}}
+
+### Emitir factura sobre una venta
+POST {{baseUrl}}/invoices
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "sale_id": "{{saleId}}",
+  "invoice_type": "simplificada",
+  "client_name": "Maria Gonzalez",
+  "client_document": "001-120390-1000A",
+  "client_address": null,
+  "client_phone": "8888-1000",
+  "client_email": "maria.demo@test.com"
+}
+
+### Anular factura
+POST {{baseUrl}}/invoices/{{invoiceId}}/cancel
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "reason": "Error de facturacion"
+}
