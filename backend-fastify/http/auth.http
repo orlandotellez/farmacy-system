@@ -1,0 +1,89 @@
+### 
+POST {{apiUrl}}/auth/register-store
+Content-Type: application/json
+
+{
+  "storeName": "Farmacia Central",
+  "storeAddress": "Av. Principal 123",
+  "storePhone": "5555-0101",
+  "adminName": "Administrador",
+  "adminEmail": "admin@farmacia.test",
+  "adminPassword": "admin123"
+}
+
+### 
+POST {{apiUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "name": "Cajero Juan",
+  "email": "cajero@farmacia.test",
+  "password": "password123",
+  "role": "cajero"
+}
+
+### 
+POST {{apiUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@farmacia.test",
+  "password": "admin123"
+}
+
+### 
+POST {{apiUrl}}/auth/refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 
+POST {{apiUrl}}/auth/logout
+Content-Type: application/json
+
+{
+  "refreshToken": "{{refreshToken}}"
+}
+
+### 
+POST {{apiUrl}}/auth/verify-email
+Content-Type: application/json
+
+{
+  "identifier": "admin@farmacia.test",
+  "code": "123456"
+}
+
+### 
+POST {{apiUrl}}/auth/resend-verification
+Content-Type: application/json
+
+{
+  "email": "admin@farmacia.test"
+}
+
+### 
+POST {{apiUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "admin@farmacia.test"
+}
+
+### 
+POST {{apiUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "admin@farmacia.test",
+  "code": "123456",
+  "newPassword": "nuevaPassword123"
+}
+
+### 
+GET {{apiUrl}}/auth/sessions
+
+### 
+DELETE {{apiUrl}}/auth/sessions/{{sessionId}}

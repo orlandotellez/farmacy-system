@@ -1,0 +1,44 @@
+### 
+
+GET {{apiUrl}}/users?page=1&limit=10 HTTP/1.1
+
+
+### 
+
+GET {{apiUrl}}/users?search=admin&page=1&limit=10 HTTP/1.1
+
+
+### 
+
+GET {{apiUrl}}/users/{{userId}} HTTP/1.1
+
+
+### 
+
+POST {{apiUrl}}/users HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "farmaceutico@farmacia.test",
+  "name": "Farmaceutico Ana",
+  "password": "password123",
+  "phone": "5555-0202",
+  "role": "farmaceutico"
+}
+
+
+### 
+
+PUT {{apiUrl}}/users/{{userId}} HTTP/1.1
+Content-Type: application/json
+
+{
+  "name": "Farmaceutico Ana Actualizada",
+  "phone": "5555-9999",
+  "role": "farmaceutico"
+}
+
+
+### 
+
+DELETE {{apiUrl}}/users/{{userId}} HTTP/1.1
