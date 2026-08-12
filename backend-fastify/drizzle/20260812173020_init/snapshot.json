@@ -1,11 +1,22 @@
 {
   "version": "8",
   "dialect": "postgres",
-  "id": "03359bbf-7985-4f81-a045-7d3e2a62eb4b",
+  "id": "9b28fb32-dfae-44c2-abcf-101fa8999898",
   "prevIds": [
-    "9216177b-0236-479b-a890-0b2a2d9f3de7"
+    "00000000-0000-0000-0000-000000000000"
   ],
   "ddl": [
+    {
+      "values": [
+        "admin",
+        "farmaceutico",
+        "cajero",
+        "bodeguero"
+      ],
+      "name": "ROLE",
+      "entityType": "enums",
+      "schema": "public"
+    },
     {
       "values": [
         "unidad",
@@ -30,17 +41,6 @@
       "schema": "public"
     },
     {
-      "values": [
-        "admin",
-        "farmaceutico",
-        "cajero",
-        "bodeguero"
-      ],
-      "name": "ROLE",
-      "entityType": "enums",
-      "schema": "public"
-    },
-    {
       "isRlsEnabled": false,
       "name": "account",
       "entityType": "tables",
@@ -48,7 +48,25 @@
     },
     {
       "isRlsEnabled": false,
-      "name": "batch",
+      "name": "session",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "store",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "users",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "verification",
       "entityType": "tables",
       "schema": "public"
     },
@@ -60,19 +78,19 @@
     },
     {
       "isRlsEnabled": false,
-      "name": "client",
-      "entityType": "tables",
-      "schema": "public"
-    },
-    {
-      "isRlsEnabled": false,
-      "name": "inventory_movement",
-      "entityType": "tables",
-      "schema": "public"
-    },
-    {
-      "isRlsEnabled": false,
       "name": "medicine",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "supplier",
+      "entityType": "tables",
+      "schema": "public"
+    },
+    {
+      "isRlsEnabled": false,
+      "name": "client",
       "entityType": "tables",
       "schema": "public"
     },
@@ -102,31 +120,25 @@
     },
     {
       "isRlsEnabled": false,
-      "name": "session",
+      "name": "batch",
       "entityType": "tables",
       "schema": "public"
     },
     {
       "isRlsEnabled": false,
-      "name": "store",
+      "name": "inventory_movement",
       "entityType": "tables",
       "schema": "public"
     },
     {
       "isRlsEnabled": false,
-      "name": "supplier",
+      "name": "sale",
       "entityType": "tables",
       "schema": "public"
     },
     {
       "isRlsEnabled": false,
-      "name": "users",
-      "entityType": "tables",
-      "schema": "public"
-    },
-    {
-      "isRlsEnabled": false,
-      "name": "verification",
+      "name": "sale_item",
       "entityType": "tables",
       "schema": "public"
     },
@@ -310,7 +322,20 @@
       "name": "id",
       "entityType": "columns",
       "schema": "public",
-      "table": "batch"
+      "table": "session"
+    },
+    {
+      "type": "timestamp",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "expires_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "session"
     },
     {
       "type": "text",
@@ -320,114 +345,10 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "batch_number",
+      "name": "token",
       "entityType": "columns",
       "schema": "public",
-      "table": "batch"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "medicine_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "purchase_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "supplier_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "manufacture_date",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "expiry_date",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "0",
-      "generated": null,
-      "identity": null,
-      "name": "initial_quantity",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "0",
-      "generated": null,
-      "identity": null,
-      "name": "quantity",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "type": "numeric(10,2)",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "unit_cost",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "batch"
+      "table": "session"
     },
     {
       "type": "text",
@@ -437,10 +358,23 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "notes",
+      "name": "ip_address",
       "entityType": "columns",
       "schema": "public",
-      "table": "batch"
+      "table": "session"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_agent",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "session"
     },
     {
       "type": "uuid",
@@ -453,20 +387,7 @@
       "name": "user_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "batch"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "store_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "batch"
+      "table": "session"
     },
     {
       "type": "timestamp with time zone",
@@ -479,7 +400,7 @@
       "name": "created_at",
       "entityType": "columns",
       "schema": "public",
-      "table": "batch"
+      "table": "session"
     },
     {
       "type": "timestamp with time zone",
@@ -492,7 +413,332 @@
       "name": "updated_at",
       "entityType": "columns",
       "schema": "public",
-      "table": "batch"
+      "table": "session"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "store"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "store"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "address",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "store"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "phone",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "store"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "ruc",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "store"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "email",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "store"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "store"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "store"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "email",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "name": "email_verified",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "phone",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "image",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "ROLE",
+      "typeSchema": "public",
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'cajero'",
+      "generated": null,
+      "identity": null,
+      "name": "role",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "store_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "verification"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "identifier",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "verification"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "value",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "verification"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "expires_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "verification"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "verification"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "verification"
     },
     {
       "type": "uuid",
@@ -584,344 +830,6 @@
       "entityType": "columns",
       "schema": "public",
       "table": "category"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "full_name",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "'cedula'",
-      "generated": null,
-      "identity": null,
-      "name": "document_type",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "document_number",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "phone",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "email",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "address",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "birth_date",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "sex",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "allergies",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "chronic_diseases",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "observations",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "boolean",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "false",
-      "generated": null,
-      "identity": null,
-      "name": "is_frequent",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "store_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "created_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "updated_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "deleted_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "medicine_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "movement_type",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "quantity",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "note",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "batch_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "user_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "store_id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "created_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "inventory_movement"
     },
     {
       "type": "uuid",
@@ -1260,6 +1168,409 @@
       "entityType": "columns",
       "schema": "public",
       "table": "medicine"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "company",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "ruc",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "contact_name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "email",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "phone",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "address",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "notes",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "true",
+      "generated": null,
+      "identity": null,
+      "name": "is_active",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "store_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "full_name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "'cedula'",
+      "generated": null,
+      "identity": null,
+      "name": "document_type",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "document_number",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "phone",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "email",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "address",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "birth_date",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "sex",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "allergies",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "chronic_diseases",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "observations",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "boolean",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "false",
+      "generated": null,
+      "identity": null,
+      "name": "is_frequent",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "store_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "deleted_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "client"
     },
     {
       "type": "uuid",
@@ -1896,20 +2207,7 @@
       "name": "id",
       "entityType": "columns",
       "schema": "public",
-      "table": "session"
-    },
-    {
-      "type": "timestamp",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "expires_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "session"
+      "table": "batch"
     },
     {
       "type": "text",
@@ -1919,36 +2217,10 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "token",
+      "name": "batch_number",
       "entityType": "columns",
       "schema": "public",
-      "table": "session"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "ip_address",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "session"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "user_agent",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "session"
+      "table": "batch"
     },
     {
       "type": "uuid",
@@ -1958,244 +2230,101 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "user_id",
+      "name": "medicine_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "session"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "created_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "session"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "updated_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "session"
+      "table": "batch"
     },
     {
       "type": "uuid",
       "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "id",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "store"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "name",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "store"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
       "notNull": false,
       "dimensions": 0,
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "address",
+      "name": "purchase_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "store"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "phone",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "store"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "ruc",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "store"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "email",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "store"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "created_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "store"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "updated_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "store"
+      "table": "batch"
     },
     {
       "type": "uuid",
       "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "supplier_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "batch"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "manufacture_date",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "batch"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "id",
+      "name": "expiry_date",
       "entityType": "columns",
       "schema": "public",
-      "table": "supplier"
+      "table": "batch"
     },
     {
-      "type": "text",
+      "type": "integer",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": null,
+      "default": "0",
       "generated": null,
       "identity": null,
-      "name": "name",
+      "name": "initial_quantity",
       "entityType": "columns",
       "schema": "public",
-      "table": "supplier"
+      "table": "batch"
     },
     {
-      "type": "text",
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "0",
+      "generated": null,
+      "identity": null,
+      "name": "quantity",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "batch"
+    },
+    {
+      "type": "numeric(10,2)",
       "typeSchema": null,
       "notNull": false,
       "dimensions": 0,
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "company",
+      "name": "unit_cost",
       "entityType": "columns",
       "schema": "public",
-      "table": "supplier"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "ruc",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "supplier"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "contact_name",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "supplier"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "email",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "supplier"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "phone",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "supplier"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "address",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "supplier"
+      "table": "batch"
     },
     {
       "type": "text",
@@ -2208,20 +2337,20 @@
       "name": "notes",
       "entityType": "columns",
       "schema": "public",
-      "table": "supplier"
+      "table": "batch"
     },
     {
-      "type": "boolean",
+      "type": "uuid",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
-      "default": "true",
+      "default": null,
       "generated": null,
       "identity": null,
-      "name": "is_active",
+      "name": "user_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "supplier"
+      "table": "batch"
     },
     {
       "type": "uuid",
@@ -2234,7 +2363,7 @@
       "name": "store_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "supplier"
+      "table": "batch"
     },
     {
       "type": "timestamp with time zone",
@@ -2247,7 +2376,7 @@
       "name": "created_at",
       "entityType": "columns",
       "schema": "public",
-      "table": "supplier"
+      "table": "batch"
     },
     {
       "type": "timestamp with time zone",
@@ -2260,20 +2389,7 @@
       "name": "updated_at",
       "entityType": "columns",
       "schema": "public",
-      "table": "supplier"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "deleted_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "supplier"
+      "table": "batch"
     },
     {
       "type": "uuid",
@@ -2286,7 +2402,20 @@
       "name": "id",
       "entityType": "columns",
       "schema": "public",
-      "table": "users"
+      "table": "inventory_movement"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "medicine_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "inventory_movement"
     },
     {
       "type": "text",
@@ -2296,49 +2425,23 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "name",
+      "name": "movement_type",
       "entityType": "columns",
       "schema": "public",
-      "table": "users"
+      "table": "inventory_movement"
     },
     {
-      "type": "text",
+      "type": "integer",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "email",
+      "name": "quantity",
       "entityType": "columns",
       "schema": "public",
-      "table": "users"
-    },
-    {
-      "type": "boolean",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "false",
-      "generated": null,
-      "identity": null,
-      "name": "email_verified",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "users"
-    },
-    {
-      "type": "text",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "phone",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "users"
+      "table": "inventory_movement"
     },
     {
       "type": "text",
@@ -2348,23 +2451,36 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "image",
+      "name": "note",
       "entityType": "columns",
       "schema": "public",
-      "table": "users"
+      "table": "inventory_movement"
     },
     {
-      "type": "ROLE",
-      "typeSchema": "public",
-      "notNull": true,
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
       "dimensions": 0,
-      "default": "'cajero'",
+      "default": null,
       "generated": null,
       "identity": null,
-      "name": "role",
+      "name": "batch_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "users"
+      "table": "inventory_movement"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "inventory_movement"
     },
     {
       "type": "uuid",
@@ -2377,7 +2493,7 @@
       "name": "store_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "users"
+      "table": "inventory_movement"
     },
     {
       "type": "timestamp with time zone",
@@ -2390,33 +2506,7 @@
       "name": "created_at",
       "entityType": "columns",
       "schema": "public",
-      "table": "users"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "updated_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "users"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "deleted_at",
-      "entityType": "columns",
-      "schema": "public",
-      "table": "users"
+      "table": "inventory_movement"
     },
     {
       "type": "uuid",
@@ -2429,7 +2519,33 @@
       "name": "id",
       "entityType": "columns",
       "schema": "public",
-      "table": "verification"
+      "table": "sale"
+    },
+    {
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "subtotal",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "total",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
     },
     {
       "type": "text",
@@ -2439,36 +2555,153 @@
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "identifier",
+      "name": "payment_method",
       "entityType": "columns",
       "schema": "public",
-      "table": "verification"
+      "table": "sale"
+    },
+    {
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "amount_received",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "change_given",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
     },
     {
       "type": "text",
       "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
+      "default": "'completada'",
+      "generated": null,
+      "identity": null,
+      "name": "status",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "value",
+      "name": "cancellation_reason",
       "entityType": "columns",
       "schema": "public",
-      "table": "verification"
+      "table": "sale"
     },
     {
       "type": "timestamp with time zone",
       "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "cancelled_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "cancelled_by",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
       "notNull": true,
       "dimensions": 0,
       "default": null,
       "generated": null,
       "identity": null,
-      "name": "expires_at",
+      "name": "user_id",
       "entityType": "columns",
       "schema": "public",
-      "table": "verification"
+      "table": "sale"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "user_name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "client_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "prescription_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "store_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale"
     },
     {
       "type": "timestamp with time zone",
@@ -2481,7 +2714,7 @@
       "name": "created_at",
       "entityType": "columns",
       "schema": "public",
-      "table": "verification"
+      "table": "sale"
     },
     {
       "type": "timestamp with time zone",
@@ -2494,105 +2727,347 @@
       "name": "updated_at",
       "entityType": "columns",
       "schema": "public",
+      "table": "sale"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "sale_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "medicine_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "type": "text",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "medicine_name",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "type": "integer",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "quantity",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "unit_price",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "type": "numeric(10,2)",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "line_total",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "type": "uuid",
+      "typeSchema": null,
+      "notNull": false,
+      "dimensions": 0,
+      "default": null,
+      "generated": null,
+      "identity": null,
+      "name": "batch_id",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "type": "timestamp with time zone",
+      "typeSchema": null,
+      "notNull": true,
+      "dimensions": 0,
+      "default": "now()",
+      "generated": null,
+      "identity": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "token",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "uq_session_token",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "session"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "user_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_session_user_id",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "session"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "name",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_store_name",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "store"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "email",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "uq_users_store_email",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "email",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_users_email",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "role",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_users_role",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_users_store_id",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "deleted_at",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_users_store_id_deleted_at",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "users"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "identifier",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "expires_at",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_verification_identifier_expires_at",
+      "entityType": "indexes",
+      "schema": "public",
       "table": "verification"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "medicine_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_batch_medicine_id",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "expiry_date",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_batch_expiry_date",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "store_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        },
-        {
-          "value": "expiry_date",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_batch_store_expiry_date",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "store_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        },
-        {
-          "value": "created_at",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_batch_store_created_at",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "batch"
     },
     {
       "nameExplicit": true,
@@ -2684,272 +3159,6 @@
       "entityType": "indexes",
       "schema": "public",
       "table": "category"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "full_name",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_client_full_name",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "document_number",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_client_document_number",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "phone",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_client_phone",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "store_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_client_store_id",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "store_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        },
-        {
-          "value": "deleted_at",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_client_store_deleted_at",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "store_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        },
-        {
-          "value": "full_name",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_client_store_full_name",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "store_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        },
-        {
-          "value": "is_frequent",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_client_store_is_frequent",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "medicine_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_inventory_movement_medicine_id",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "batch_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_inventory_movement_batch_id",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "store_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        },
-        {
-          "value": "created_at",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_inventory_movement_store_created_at",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "store_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        },
-        {
-          "value": "movement_type",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_inventory_movement_store_movement_type",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "inventory_movement"
     },
     {
       "nameExplicit": true,
@@ -3216,6 +3425,272 @@
       "entityType": "indexes",
       "schema": "public",
       "table": "medicine"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "name",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_supplier_name",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "is_active",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_supplier_is_active",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "name",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_supplier_store_name",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "deleted_at",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_supplier_store_deleted_at",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "full_name",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_client_full_name",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "document_number",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_client_document_number",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "phone",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_client_phone",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_client_store_id",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "deleted_at",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_client_store_deleted_at",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "full_name",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_client_store_full_name",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "client"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "is_frequent",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_client_store_is_frequent",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "client"
     },
     {
       "nameExplicit": true,
@@ -3585,22 +4060,232 @@
       "nameExplicit": true,
       "columns": [
         {
-          "value": "token",
+          "value": "medicine_id",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
           "opclass": null
         }
       ],
-      "isUnique": true,
+      "isUnique": false,
       "where": null,
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "uq_session_token",
+      "name": "idx_batch_medicine_id",
       "entityType": "indexes",
       "schema": "public",
-      "table": "session"
+      "table": "batch"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "expiry_date",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_batch_expiry_date",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "batch"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "expiry_date",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_batch_store_expiry_date",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "batch"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "created_at",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_batch_store_created_at",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "batch"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "medicine_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_inventory_movement_medicine_id",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "inventory_movement"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "batch_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_inventory_movement_batch_id",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "inventory_movement"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "created_at",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_inventory_movement_store_created_at",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "inventory_movement"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "movement_type",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_inventory_movement_store_movement_type",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "inventory_movement"
+    },
+    {
+      "nameExplicit": true,
+      "columns": [
+        {
+          "value": "store_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "medicine_id",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "created_at",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        }
+      ],
+      "isUnique": false,
+      "where": null,
+      "with": "",
+      "method": "btree",
+      "concurrently": false,
+      "name": "idx_inventory_movement_store_medicine_created_at",
+      "entityType": "indexes",
+      "schema": "public",
+      "table": "inventory_movement"
     },
     {
       "nameExplicit": true,
@@ -3618,16 +4303,16 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_session_user_id",
+      "name": "idx_sale_user_id",
       "entityType": "indexes",
       "schema": "public",
-      "table": "session"
+      "table": "sale"
     },
     {
       "nameExplicit": true,
       "columns": [
         {
-          "value": "name",
+          "value": "client_id",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -3639,16 +4324,16 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_store_name",
+      "name": "idx_sale_client_id",
       "entityType": "indexes",
       "schema": "public",
-      "table": "store"
+      "table": "sale"
     },
     {
       "nameExplicit": true,
       "columns": [
         {
-          "value": "name",
+          "value": "status",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -3660,31 +4345,10 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_supplier_name",
+      "name": "idx_sale_status",
       "entityType": "indexes",
       "schema": "public",
-      "table": "supplier"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "is_active",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_supplier_is_active",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "supplier"
+      "table": "sale"
     },
     {
       "nameExplicit": true,
@@ -3697,7 +4361,7 @@
           "opclass": null
         },
         {
-          "value": "name",
+          "value": "created_at",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -3709,10 +4373,10 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_supplier_store_name",
+      "name": "idx_sale_store_created_at",
       "entityType": "indexes",
       "schema": "public",
-      "table": "supplier"
+      "table": "sale"
     },
     {
       "nameExplicit": true,
@@ -3725,7 +4389,14 @@
           "opclass": null
         },
         {
-          "value": "deleted_at",
+          "value": "payment_method",
+          "isExpression": false,
+          "asc": true,
+          "nullsFirst": false,
+          "opclass": null
+        },
+        {
+          "value": "created_at",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -3737,10 +4408,10 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_supplier_store_deleted_at",
+      "name": "idx_sale_store_payment_created_at",
       "entityType": "indexes",
       "schema": "public",
-      "table": "supplier"
+      "table": "sale"
     },
     {
       "nameExplicit": true,
@@ -3753,28 +4424,7 @@
           "opclass": null
         },
         {
-          "value": "email",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": true,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "uq_users_store_email",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "users"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "email",
+          "value": "prescription_id",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -3786,16 +4436,16 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_users_email",
+      "name": "idx_sale_store_prescription_id",
       "entityType": "indexes",
       "schema": "public",
-      "table": "users"
+      "table": "sale"
     },
     {
       "nameExplicit": true,
       "columns": [
         {
-          "value": "role",
+          "value": "sale_id",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -3807,16 +4457,16 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_users_role",
+      "name": "idx_sale_item_sale_id",
       "entityType": "indexes",
       "schema": "public",
-      "table": "users"
+      "table": "sale_item"
     },
     {
       "nameExplicit": true,
       "columns": [
         {
-          "value": "store_id",
+          "value": "medicine_id",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -3828,23 +4478,16 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_users_store_id",
+      "name": "idx_sale_item_medicine_id",
       "entityType": "indexes",
       "schema": "public",
-      "table": "users"
+      "table": "sale_item"
     },
     {
       "nameExplicit": true,
       "columns": [
         {
-          "value": "store_id",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        },
-        {
-          "value": "deleted_at",
+          "value": "batch_id",
           "isExpression": false,
           "asc": true,
           "nullsFirst": false,
@@ -3856,38 +4499,10 @@
       "with": "",
       "method": "btree",
       "concurrently": false,
-      "name": "idx_users_store_id_deleted_at",
+      "name": "idx_sale_item_batch_id",
       "entityType": "indexes",
       "schema": "public",
-      "table": "users"
-    },
-    {
-      "nameExplicit": true,
-      "columns": [
-        {
-          "value": "identifier",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        },
-        {
-          "value": "expires_at",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
-      ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "idx_verification_identifier_expires_at",
-      "entityType": "indexes",
-      "schema": "public",
-      "table": "verification"
+      "table": "sale_item"
     },
     {
       "nameExplicit": false,
@@ -3909,57 +4524,6 @@
     {
       "nameExplicit": false,
       "columns": [
-        "medicine_id"
-      ],
-      "schemaTo": "public",
-      "tableTo": "medicine",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "batch_medicine_id_medicine_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
-        "purchase_id"
-      ],
-      "schemaTo": "public",
-      "tableTo": "purchase",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "batch_purchase_id_purchase_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
-        "supplier_id"
-      ],
-      "schemaTo": "public",
-      "tableTo": "supplier",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "batch_supplier_id_supplier_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "batch"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
         "user_id"
       ],
       "schemaTo": "public",
@@ -3969,10 +4533,10 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
-      "name": "batch_user_id_users_id_fkey",
+      "name": "session_user_id_users_id_fkey",
       "entityType": "fks",
       "schema": "public",
-      "table": "batch"
+      "table": "session"
     },
     {
       "nameExplicit": false,
@@ -3986,10 +4550,10 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
-      "name": "batch_store_id_store_id_fkey",
+      "name": "users_store_id_store_id_fkey",
       "entityType": "fks",
       "schema": "public",
-      "table": "batch"
+      "table": "users"
     },
     {
       "nameExplicit": false,
@@ -4007,91 +4571,6 @@
       "entityType": "fks",
       "schema": "public",
       "table": "category"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
-        "store_id"
-      ],
-      "schemaTo": "public",
-      "tableTo": "store",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "client_store_id_store_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "client"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
-        "medicine_id"
-      ],
-      "schemaTo": "public",
-      "tableTo": "medicine",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "inventory_movement_medicine_id_medicine_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
-        "batch_id"
-      ],
-      "schemaTo": "public",
-      "tableTo": "batch",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "inventory_movement_batch_id_batch_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
-        "user_id"
-      ],
-      "schemaTo": "public",
-      "tableTo": "users",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "inventory_movement_user_id_users_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "inventory_movement"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
-        "store_id"
-      ],
-      "schemaTo": "public",
-      "tableTo": "store",
-      "columnsTo": [
-        "id"
-      ],
-      "onUpdate": "NO ACTION",
-      "onDelete": "NO ACTION",
-      "name": "inventory_movement_store_id_store_id_fkey",
-      "entityType": "fks",
-      "schema": "public",
-      "table": "inventory_movement"
     },
     {
       "nameExplicit": false,
@@ -4143,6 +4622,40 @@
       "entityType": "fks",
       "schema": "public",
       "table": "medicine"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "store_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "store",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "supplier_store_id_store_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "supplier"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "store_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "store",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "client_store_id_store_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "client"
     },
     {
       "nameExplicit": false,
@@ -4300,6 +4813,57 @@
     {
       "nameExplicit": false,
       "columns": [
+        "medicine_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "medicine",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "batch_medicine_id_medicine_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "batch"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "purchase_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "purchase",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "batch_purchase_id_purchase_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "batch"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "supplier_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "supplier",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "batch_supplier_id_supplier_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "batch"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
         "user_id"
       ],
       "schemaTo": "public",
@@ -4309,10 +4873,10 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
-      "name": "session_user_id_users_id_fkey",
+      "name": "batch_user_id_users_id_fkey",
       "entityType": "fks",
       "schema": "public",
-      "table": "session"
+      "table": "batch"
     },
     {
       "nameExplicit": false,
@@ -4326,10 +4890,61 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
-      "name": "supplier_store_id_store_id_fkey",
+      "name": "batch_store_id_store_id_fkey",
       "entityType": "fks",
       "schema": "public",
-      "table": "supplier"
+      "table": "batch"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "medicine_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "medicine",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "inventory_movement_medicine_id_medicine_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "inventory_movement"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "batch_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "batch",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "inventory_movement_batch_id_batch_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "inventory_movement"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "inventory_movement_user_id_users_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "inventory_movement"
     },
     {
       "nameExplicit": false,
@@ -4343,10 +4958,129 @@
       ],
       "onUpdate": "NO ACTION",
       "onDelete": "NO ACTION",
-      "name": "users_store_id_store_id_fkey",
+      "name": "inventory_movement_store_id_store_id_fkey",
       "entityType": "fks",
       "schema": "public",
-      "table": "users"
+      "table": "inventory_movement"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "user_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "users",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "sale_user_id_users_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "client_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "client",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "sale_client_id_client_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "prescription_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "prescription",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "sale_prescription_id_prescription_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "store_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "store",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "sale_store_id_store_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "sale"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "sale_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "sale",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "name": "sale_item_sale_id_sale_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "medicine_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "medicine",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "sale_item_medicine_id_medicine_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "sale_item"
+    },
+    {
+      "nameExplicit": false,
+      "columns": [
+        "batch_id"
+      ],
+      "schemaTo": "public",
+      "tableTo": "batch",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "name": "sale_item_batch_id_batch_id_fkey",
+      "entityType": "fks",
+      "schema": "public",
+      "table": "sale_item"
     },
     {
       "columns": [
@@ -4363,9 +5097,39 @@
         "id"
       ],
       "nameExplicit": false,
-      "name": "batch_pkey",
+      "name": "session_pkey",
       "schema": "public",
-      "table": "batch",
+      "table": "session",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "store_pkey",
+      "schema": "public",
+      "table": "store",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "users_pkey",
+      "schema": "public",
+      "table": "users",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "verification_pkey",
+      "schema": "public",
+      "table": "verification",
       "entityType": "pks"
     },
     {
@@ -4383,29 +5147,29 @@
         "id"
       ],
       "nameExplicit": false,
-      "name": "client_pkey",
-      "schema": "public",
-      "table": "client",
-      "entityType": "pks"
-    },
-    {
-      "columns": [
-        "id"
-      ],
-      "nameExplicit": false,
-      "name": "inventory_movement_pkey",
-      "schema": "public",
-      "table": "inventory_movement",
-      "entityType": "pks"
-    },
-    {
-      "columns": [
-        "id"
-      ],
-      "nameExplicit": false,
       "name": "medicine_pkey",
       "schema": "public",
       "table": "medicine",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "supplier_pkey",
+      "schema": "public",
+      "table": "supplier",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "client_pkey",
+      "schema": "public",
+      "table": "client",
       "entityType": "pks"
     },
     {
@@ -4453,9 +5217,9 @@
         "id"
       ],
       "nameExplicit": false,
-      "name": "session_pkey",
+      "name": "batch_pkey",
       "schema": "public",
-      "table": "session",
+      "table": "batch",
       "entityType": "pks"
     },
     {
@@ -4463,9 +5227,9 @@
         "id"
       ],
       "nameExplicit": false,
-      "name": "store_pkey",
+      "name": "inventory_movement_pkey",
       "schema": "public",
-      "table": "store",
+      "table": "inventory_movement",
       "entityType": "pks"
     },
     {
@@ -4473,9 +5237,9 @@
         "id"
       ],
       "nameExplicit": false,
-      "name": "supplier_pkey",
+      "name": "sale_pkey",
       "schema": "public",
-      "table": "supplier",
+      "table": "sale",
       "entityType": "pks"
     },
     {
@@ -4483,19 +5247,9 @@
         "id"
       ],
       "nameExplicit": false,
-      "name": "users_pkey",
+      "name": "sale_item_pkey",
       "schema": "public",
-      "table": "users",
-      "entityType": "pks"
-    },
-    {
-      "columns": [
-        "id"
-      ],
-      "nameExplicit": false,
-      "name": "verification_pkey",
-      "schema": "public",
-      "table": "verification",
+      "table": "sale_item",
       "entityType": "pks"
     }
   ],
