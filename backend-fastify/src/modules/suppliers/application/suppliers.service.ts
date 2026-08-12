@@ -1,36 +1,14 @@
 import { BadRequestError, ConflictError, NotFoundError } from "@/core/errors/AppError"
 import type { ISupplierRepository } from "../domain/suppliers.interface"
-import type { CreateSupplierData, ISupplierEntity, UpdateSupplierData } from "../domain/suppliers.entities"
+import type { CreateSupplierData, UpdateSupplierData } from "../domain/suppliers.entities"
 import type { ISupplierListResponse, ISupplierResponse } from "../domain/suppliers.types"
-
-type RichSupplier = ISupplierEntity
-function mapSupplierToResponse(supplier: RichSupplier): ISupplierResponse {
-  return {
-    id: supplier.id,
-    name: supplier.name,
-    company: supplier.company || undefined,
-    ruc: supplier.ruc || undefined,
-    contact_name: supplier.contact_name || undefined,
-    email: supplier.email || undefined,
-    phone: supplier.phone || undefined,
-    address: supplier.address || undefined,
-    notes: supplier.notes || undefined,
-    is_active: supplier.is_active,
-    medicine_count: supplier.medicine_count,
-    created_at: supplier.created_at.toISOString(),
-    updated_at: supplier.updated_at.toISOString(),
-  }
-}
-
-function isUniqueViolation(err: unknown): boolean {
-  return typeof err === "object" && err !== null && "code" in err && (err as { code?: unknown }).code === "23505"
-}
+import { mapSupplierToResponse, isUniqueViolation } from "./common/suppliers.mappers"
 
 export const createSupplierService = (repository: ISupplierRepository) => ({
   list: async (params?: { search?: string; is_active?: boolean; page?: number; limit?: number; storeId?: string }): Promise<ISupplierListResponse> => {
     const result = await repository.findAll(params)
     return {
-      data: result.suppliers.map((supplier) => mapSupplierToResponse(supplier as RichSupplier)),
+      data: result.suppliers.map((supplier) => mapSupplierToResponse(supplier)),
       meta: {
         page: result.page,
         limit: result.limit,
@@ -42,7 +20,7 @@ export const createSupplierService = (repository: ISupplierRepository) => ({
   getById: async (id: string, storeId?: string): Promise<ISupplierResponse> => {
     const supplier = await repository.findById(id, storeId)
     if (!supplier) throw new NotFoundError("Supplier not found")
-    return mapSupplierToResponse(supplier as RichSupplier)
+    return mapSupplierToResponse(supplier)
   },
   create: async (data: CreateSupplierData, storeId?: string): Promise<ISupplierResponse> => {
     if (!data.name?.trim()) throw new BadRequestError("Name is required")
@@ -51,7 +29,7 @@ export const createSupplierService = (repository: ISupplierRepository) => ({
       if (existing) throw new ConflictError("A supplier with this RUC already exists")
     }
     try {
-      return mapSupplierToResponse(await repository.create(data, storeId) as RichSupplier)
+      return mapSupplierToResponse(await repository.create(data, storeId))
     } catch (err) {
       if (isUniqueViolation(err)) throw new ConflictError("A supplier with this RUC already exists")
       throw err
@@ -65,7 +43,7 @@ export const createSupplierService = (repository: ISupplierRepository) => ({
       if (duplicate) throw new ConflictError("A supplier with this RUC already exists")
     }
     try {
-      return mapSupplierToResponse(await repository.update(id, data, storeId) as RichSupplier)
+      return mapSupplierToResponse(await repository.update(id, data, storeId))
     } catch (err) {
       if (isUniqueViolation(err)) throw new ConflictError("A supplier with this RUC already exists")
       throw err

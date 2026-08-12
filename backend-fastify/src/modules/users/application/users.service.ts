@@ -1,22 +1,8 @@
 import { ConflictError, NotFoundError } from "@/core/errors/AppError"
 import type { IUserRepository } from "../domain/users.interface"
-import type { CreateUserData, IUserEntity, UpdateUserData } from "../domain/users.entities"
+import type { CreateUserData, UpdateUserData } from "../domain/users.entities"
 import type { IUserListResponse, IUserResponse } from "../domain/users.types"
-
-function mapUserToResponse(user: IUserEntity): IUserResponse {
-  return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    email_verified: user.email_verified,
-    role: user.role,
-    phone: user.phone ?? undefined,
-    image: user.image ?? undefined,
-    store_id: user.store_id ?? undefined,
-    created_at: user.created_at.toISOString(),
-    updated_at: user.updated_at.toISOString(),
-  }
-}
+import { mapUserToResponse } from "./common/users.mappers"
 
 export const createUserService = (repository: IUserRepository) => ({
   list: async (params?: { search?: string; role?: string; page?: number; limit?: number; storeId?: string }): Promise<IUserListResponse> => {
