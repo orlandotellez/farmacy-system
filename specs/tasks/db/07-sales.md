@@ -11,16 +11,18 @@
 ## Checklist de Tareas DB
 
 ### 1. Ventas
-- [ ] Crear tabla `sale` (subtotal, total, payment_method, amount_received, change_given, status, anulación, user/client/prescription, store).
-- [ ] Índices: `user_id`, `client_id`, `status`, `[store_id, created_at]`.
+- [x] Crear tabla `sale` (subtotal, total, payment_method, amount_received, change_given, status, anulación, user/client/prescription, store).
+- [x] Índices: `user_id`, `client_id`, `status`, `[store_id, created_at]`.
 
 ### 2. Items de Venta
-- [ ] Crear tabla `sale_item` (medicine_name snapshot, quantity, unit_price, line_total, batch_id).
-- [ ] Índices: `sale_id`, `medicine_id`, `batch_id`.
+- [x] Crear tabla `sale_item` (medicine_name snapshot, quantity, unit_price, line_total, batch_id).
+- [x] Índices: `sale_id`, `medicine_id`, `batch_id`.
 
-### 3. Pendientes / Mejoras
-- [ ] CHECK `payment_method IN (...)` (hoy String libre).
+### 3. Índices de operación
+- [x] Índice `[store_id, payment_method, created_at]` para el filtro del historial de ventas.
+- [x] Índice `[store_id, prescription_id]` en sales para validar autorización acumulada de recetas.
+
+### 4. Pendientes / Mejoras
+- [ ] CHECK `payment_method IN (...)` (actualmente permanece como `text` para mantener el patrón de estados del proyecto).
 - [ ] CHECK `total >= 0` y `quantity > 0`.
-- [ ] Índice `[store_id, payment_method, created_at]` para el filtro del historial de ventas.
-- [ ] Índice `[store_id, prescription_id]` en sales (para validar autorización acumulada de recetas).
-- [ ] Evaluar `UNIQUE (store_id, id)` de factura → mantener la regla "una factura emitida por venta" también en DB (índice parcial `WHERE status='emitida'`).
+- [ ] Evaluar `UNIQUE (store_id, id)` de factura y la regla de una factura emitida por venta cuando se implemente `invoice`.

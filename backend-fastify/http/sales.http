@@ -1,0 +1,56 @@
+### 
+GET {{apiUrl}}/sales?page=1&limit=10
+
+### 
+GET {{apiUrl}}/sales?status=completada&payment_method=efectivo&page=1&limit=10
+
+### 
+GET {{apiUrl}}/sales?from=2026-08-01&to=2026-08-31&min_amount=100
+
+### 
+GET {{apiUrl}}/sales/{{saleId}}
+
+### 
+POST {{apiUrl}}/sales
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "medicine_id": "{{medicineId}}",
+      "quantity": 2
+    }
+  ],
+  "payment_method": "efectivo",
+  "amount_received": 150,
+  "client_id": "{{clientId}}"
+}
+
+### 
+POST {{apiUrl}}/sales
+Content-Type: application/json
+
+{
+  "items": [
+    {
+      "medicine_id": "{{medicineId}}",
+      "quantity": 1,
+      "batch_id": "{{batchId}}"
+    }
+  ],
+  "payment_method": "transferencia"
+}
+
+### 
+POST {{apiUrl}}/sales/{{saleId}}/cancel
+Content-Type: application/json
+
+{
+  "reason": "Cliente devolvió el producto"
+}
+
+### 
+GET {{apiUrl}}/sales/report?from=2026-08-01&to=2026-08-31
+
+### 
+GET {{apiUrl}}/sales/revenue-trend?start_date=2026-08-01&end_date=2026-08-31&group_by=day
