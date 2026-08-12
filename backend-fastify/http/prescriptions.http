@@ -1,0 +1,61 @@
+### 
+GET {{apiUrl}}/prescriptions?page=1&limit=10
+
+### 
+GET {{apiUrl}}/prescriptions?search=RX&page=1&limit=10
+
+### 
+GET {{apiUrl}}/prescriptions?status=pendiente&page=1&limit=10
+
+### 
+GET {{apiUrl}}/prescriptions/{{prescriptionId}}
+
+### 
+POST {{apiUrl}}/prescriptions
+Content-Type: application/json
+
+{
+  "number": "RX-0001",
+  "doctor_name": "Dra. Laura Pérez",
+  "medical_center": "Clínica Central",
+  "issue_date": "2026-08-03",
+  "expiry_date": "2026-09-02",
+  "client_id": "{{clientId}}",
+  "items": [
+    {
+      "medicine_id": "{{medicineId}}",
+      "quantity": 1
+    }
+  ]
+}
+
+### 
+PUT {{apiUrl}}/prescriptions/{{prescriptionId}}
+Content-Type: application/json
+
+{
+  "doctor_name": "Dra. Laura Pérez Actualizada",
+  "notes": "Actualizada"
+}
+
+### 
+POST {{apiUrl}}/prescriptions/{{prescriptionId}}/validate
+Content-Type: application/json
+
+{
+  "authorized_items": [
+    {
+      "medicine_id": "{{medicineId}}",
+      "quantity": 1
+    }
+  ]
+}
+
+### 
+POST {{apiUrl}}/prescriptions/{{prescriptionId}}/validate
+Content-Type: application/json
+
+{}
+
+### 
+DELETE {{apiUrl}}/prescriptions/{{prescriptionId}}
