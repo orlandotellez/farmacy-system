@@ -44,7 +44,8 @@ export const sale = pgTable("sale", {
     index("idx_sale_status").on(table.status),
     index("idx_sale_store_created_at").on(table.storeId, table.createdAt),
     index("idx_sale_store_payment_created_at").on(table.storeId, table.paymentMethod, table.createdAt),
-    index("idx_sale_store_prescription_id").on(table.storeId, table.prescriptionId)
+    index("idx_sale_store_prescription_id").on(table.storeId, table.prescriptionId),
+    index("idx_sale_store_status_created_at").on(table.storeId, table.status, table.createdAt)
   ]
 );
 

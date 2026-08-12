@@ -1,0 +1,14 @@
+@baseUrl = {{host}}/api/v1
+@token = {{authToken}}
+
+### Dashboard de KPIs
+GET {{baseUrl}}/reports/dashboard
+Authorization: Bearer {{token}}
+
+### Reporte financiero del período
+GET {{baseUrl}}/reports/financial
+Authorization: Bearer {{token}}
+
+### Reporte financiero con rango de fechas
+GET {{baseUrl}}/reports/financial?from=2026-08-01&to=2026-08-31
+Authorization: Bearer {{token}}
