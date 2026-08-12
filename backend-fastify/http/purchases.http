@@ -1,0 +1,85 @@
+### 
+GET {{apiUrl}}/purchases?page=1&limit=10
+
+### 
+GET {{apiUrl}}/purchases?search=OC-&page=1&limit=10
+
+### 
+GET {{apiUrl}}/purchases?status=aprobada&page=1&limit=10
+
+### 
+GET {{apiUrl}}/purchases?supplier_id={{supplierId}}&page=1&limit=10
+
+### 
+GET {{apiUrl}}/purchases/{{purchaseId}}
+
+### 
+POST {{apiUrl}}/purchases
+Content-Type: application/json
+
+{
+  "supplier_id": "{{supplierId}}",
+  "expected_date": "2026-08-20",
+  "notes": "Compra de reposición",
+  "items": [
+    {
+      "medicine_id": "{{medicineId}}",
+      "quantity": 20,
+      "unit_cost": 38
+    }
+  ]
+}
+
+### 
+PUT {{apiUrl}}/purchases/{{purchaseId}}
+Content-Type: application/json
+
+{
+  "notes": "Compra actualizada",
+  "items": [
+    {
+      "medicine_id": "{{medicineId}}",
+      "quantity": 30,
+      "unit_cost": 37
+    }
+  ]
+}
+
+### 
+POST {{apiUrl}}/purchases/{{purchaseId}}/approve
+
+### 
+POST {{apiUrl}}/purchases/{{purchaseId}}/receive
+Content-Type: application/json
+
+{
+  "batches": [
+    {
+      "batch_number": "LOTE-01",
+      "medicine_id": "{{medicineId}}",
+      "manufacture_date": "2026-01-01",
+      "expiry_date": "2027-01-01",
+      "quantity": 20,
+      "unit_cost": 38
+    }
+  ]
+}
+
+### 
+POST {{apiUrl}}/purchases/{{purchaseId}}/receive
+Content-Type: application/json
+
+{
+  "batches": [
+    {
+      "batch_number": "LOTE-02",
+      "medicine_id": "{{medicineId}}",
+      "expiry_date": "2027-02-01",
+      "quantity": 10,
+      "unit_cost": 38
+    }
+  ]
+}
+
+### 
+POST {{apiUrl}}/purchases/{{purchaseId}}/cancel
