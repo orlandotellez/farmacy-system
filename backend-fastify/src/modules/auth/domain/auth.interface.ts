@@ -58,5 +58,6 @@ export interface IAuthRepository {
   user: IUserRepository,
   store: IStoreRepository,
   account: IAccountRepository,
-  session: ISessionRepository
+  session: ISessionRepository,
+  verification: IVerificationRepository
 }

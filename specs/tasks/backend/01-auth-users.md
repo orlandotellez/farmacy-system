@@ -12,22 +12,23 @@
 
 ### 1. Autenticación y JWT
 - [x] Implementar `POST /auth/register-store` (crea store + admin + settings + tokens).
-- [] Implementar `POST /auth/login` (verifica bcrypt, emite tokens, registra sesión).
-- [] Implementar `POST /auth/refresh` (rotación de tokens).
-- [] Implementar `POST /auth/logout` (revoca refresh token).
-- [] Implementar `POST /auth/verify-email` y `POST /auth/resend-verification`.
-- [] Implementar `POST /auth/forgot-password` y `POST /auth/reset-password`.
-- [] Implementar `GET /auth/sessions` y `DELETE /auth/sessions/:id`.
+- [x] Implementar `POST /auth/login` (verifica bcrypt, emite tokens, registra sesión).
+- [x] Implementar `POST /auth/register`.
+- [x] Implementar `POST /auth/refresh` (rotación de tokens).
+- [x] Implementar `POST /auth/logout` (revoca refresh token).
+- [x] Implementar `POST /auth/verify-email` y `POST /auth/resend-verification`.
+- [x] Implementar `POST /auth/forgot-password` y `POST /auth/reset-password`.
+- [x] Implementar `GET /auth/sessions` y `DELETE /auth/sessions/:id`.
 
 ### 2. Guards y RBAC
-- [] `authGuard` (resuelve userId/role/storeId desde cookie o Bearer).
-- [] `adminGuard` (exige rol admin).
-- [] `storeGuard` (exige storeId; 403 "Store context required").
+- [x] `authGuard` (resuelve userId/role/storeId desde cookie o Bearer).
+- [x] `adminGuard` (exige rol admin).
+- [x] `storeGuard` (exige storeId; 403 "Store context required").
 
 ### 3. Gestión de Usuarios
-- [] Implementar CRUD `/users` (admin-only).
-- [] Validar unicidad `(store_id, email)` y rol válido.
-- [] Soft-delete de usuarios.
+- [x] Implementar CRUD `/users` (admin-only).
+- [x] Validar unicidad `(store_id, email)` y rol válido.
+- [x] Soft-delete de usuarios.
 
 ### 4. Pendientes / Mejoras
 - [ ] **RBAC fino por rol**: decidir y aplicar permisos por endpoint (ej. solo `farmaceutico|admin` validan recetas; solo `bodeguero|admin` reciben compras; solo `cajero|admin` crean ventas). Crear guard `roleGuard(...roles)`.

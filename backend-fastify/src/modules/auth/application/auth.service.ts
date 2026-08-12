@@ -1,11 +1,31 @@
-import { ConflictError, UnauthorizedError } from "@/core/errors/AppError";
-import { comparePassword, hashPassword } from "./common/auth.crypto";
-import { generateTokens } from "./common/auth.token";
+import { ConflictError, NotFoundError, UnauthorizedError } from "@/core/errors/AppError";
+import { comparePassword, generateVerificationCode, hashPassword } from "./common/auth.crypto";
+import { generateTokens, verifyToken } from "./common/auth.token";
 import { IAuthRepository } from "../domain/auth.interface";
-import { IAuthResponse, ILoginPayload, IRegisterStorePayload, IRegisterStoreResponse, Role } from "../domain/auth.types";
+import {
+  IAuthResponse,
+  ILoginPayload,
+  IRegisterPayload,
+  IRegisterStorePayload,
+  IRegisterStoreResponse,
+  Role,
+  IVerifyEmailPayload,
+  IForgotPasswordPayload,
+  IResetPasswordPayload,
+  IUserSessionsResponse,
+  ISessionResponse,
+  IVerificationResponse,
+  IVerifyEmailResponse,
+  IForgotPasswordResponse,
+  IResetPasswordResponse,
+  IRefreshResponse,
+  ILogoutResponse
+} from "../domain/auth.types";
 import { mapUserToResponse } from "./common/auth.mappers";
+import { env } from "@/config/env";
 
 const SESSION_EXPIRY = 7 * 24 * 60 * 60 * 1000;
+const VERIFICATION_CODE_EXPIRY = 15 * 60 * 1000;
 
 export const createAuthService = (repository: IAuthRepository) => ({
   registerStore: async (
@@ -53,7 +73,7 @@ export const createAuthService = (repository: IAuthRepository) => ({
     const { accessToken, refreshToken } = generateTokens({
       userId: user.id,
       email: user.email,
-      role: user.role,
+      role: user.role as Role,
       storeId: store.id,
       storeName: store.name,
     });
@@ -74,13 +94,72 @@ export const createAuthService = (repository: IAuthRepository) => ({
     };
   },
 
+  register: async (data: IRegisterPayload, storeId: string): Promise<IAuthResponse> => {
+    const { name, email, password, role = "cajero" } = data;
+
+    const existingUser = await repository.user.findByEmail(email, storeId);
+    if (existingUser) {
+      throw new ConflictError("Email already registered in this store");
+    }
+
+    const hashedPassword = await hashPassword(password);
+
+    const user = await repository.user.create({
+      name,
+      email,
+      role,
+      email_verified: false,
+      store_id: storeId,
+    });
+
+    await repository.account.create({
+      account_id: user.id,
+      provider_id: "credentials",
+      user_id: user.id,
+      password: hashedPassword,
+    });
+
+    const verificationCode = generateVerificationCode();
+    await repository.verification.create({
+      identifier: email,
+      value: verificationCode,
+      expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY),
+    });
+
+    console.log(`Verification code for ${email}: ${verificationCode}`);
+
+    const store = await repository.store.getStoreInfo(storeId);
+    const { accessToken, refreshToken } = generateTokens({
+      userId: user.id,
+      email: user.email,
+      role: user.role as Role,
+      storeId: store.id,
+      storeName: store.name,
+    });
+
+    await repository.session.create({
+      userId: user.id,
+      token: refreshToken,
+      expiresAt: new Date(Date.now() + SESSION_EXPIRY),
+    });
+
+    return {
+      message: "User created successfully. Please verify your email.",
+      user: mapUserToResponse(user),
+      store,
+      accessToken,
+      refreshToken,
+    };
+  },
+
   login: async (data: ILoginPayload): Promise<IAuthResponse> => {
-    const account = await repository.account.findCredentialsAccountByEmail(data.email)
+    const { email, password } = data
+    const account = await repository.account.findCredentialsAccountByEmail(email)
     if (!account) throw new UnauthorizedError("Invalid credentials")
 
     if (!account.password) throw new UnauthorizedError("Invalid credentials")
 
-    const isValidPassword = await comparePassword(data.password, account.password)
+    const isValidPassword = await comparePassword(password, account.password)
     if (!isValidPassword) throw new UnauthorizedError("Invalid credentials")
 
     const user = await repository.user.findById(account.user_id!)
@@ -105,27 +184,247 @@ export const createAuthService = (repository: IAuthRepository) => ({
     })
 
     return {
+      message: "Login successfully",
+      user: mapUserToResponse(user),
+      store,
+      accessToken,
+      refreshToken: newRefreshToken
+    }
+  },
+
+  logout: async (refreshToken: string): Promise<ILogoutResponse> => {
+    await repository.session.delete(refreshToken)
+
+    return {
+      message: "Logged out successfully"
+    }
+  },
+
+  refresh: async (refreshToken: string): Promise<IRefreshResponse> => {
+    let payload: { userId: string }
+
+    try {
+      payload = verifyToken(refreshToken, env.JWT_REFRESH_SECRET) as { userId: string }
+    } catch {
+      throw new UnauthorizedError("Invalid or expired refresh token")
+    }
+
+    const session = await repository.session.findByToken(refreshToken)
+    if (!session) {
+      throw new UnauthorizedError("Invalid refresh token")
+    }
+
+    if (session.expires_at < new Date()) {
+      await repository.session.delete(refreshToken)
+      throw new UnauthorizedError("Session expired")
+    }
+
+    const user = await repository.user.findById(payload.userId)
+    if (!user) {
+      throw new UnauthorizedError("User not found")
+    }
+
+    await repository.session.delete(refreshToken)
+
+    const store = await repository.store.getStoreInfo(user.store_id)
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens({
+      userId: user.id,
+      email: user.email,
+      role: user.role as Role,
+      storeId: store.id,
+      storeName: store.name
+    })
+
+    await repository.session.create({
+      userId: user.id,
+      token: newRefreshToken,
+      expiresAt: new Date(Date.now() + SESSION_EXPIRY)
+    })
+
+    return {
       message: "Token refreshed successfully",
       user: mapUserToResponse(user),
       store,
       accessToken,
       refreshToken: newRefreshToken
     }
-  }
+  },
+
+  verifyEmail: async (data: IVerifyEmailPayload): Promise<IVerifyEmailResponse> => {
+    const { identifier, code } = data
+
+    const verification = await repository.verification.findByIdentifierAndValue(
+      identifier,
+      code
+    )
+
+    if (!verification) {
+      throw new UnauthorizedError("Invalid verification code")
+    }
+
+    if (verification.expires_at < new Date()) {
+      await repository.verification.deleteByIdentifier(identifier)
+      throw new UnauthorizedError("Verification code expired")
+    }
+
+    const user = await repository.user.findByEmail(identifier)
+    if (!user) {
+      throw new NotFoundError("User not found")
+    }
+
+    await repository.user.update(user.id, { email_verified: true })
+
+    await repository.verification.deleteByIdentifier(identifier)
+
+    const store = await repository.store.getStoreInfo(user.store_id)
+    const { accessToken, refreshToken } = generateTokens({
+      userId: user.id,
+      email: user.email,
+      role: user.role as Role,
+      storeId: store.id,
+      storeName: store.name
+    })
+
+    await repository.session.create({
+      userId: user.id,
+      token: refreshToken,
+      expiresAt: new Date(Date.now() + SESSION_EXPIRY)
+    })
+
+    return {
+      message: "Email verified successfully",
+      accessToken,
+      refreshToken
+    }
+  },
+
+  resendVerification: async (email: string): Promise<IVerificationResponse> => {
+    const user = await repository.user.findByEmail(email)
+
+    if (!user) {
+      return {
+        message: "If the email exists, a new verification code has been sent",
+        expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+      }
+    }
+
+    if (user.email_verified) {
+      throw new ConflictError("Email already verified")
+    }
+
+    await repository.verification.deleteByIdentifier(email)
+
+    const verificationCode = generateVerificationCode()
+    await repository.verification.create({
+      identifier: email,
+      value: verificationCode,
+      expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+    })
+
+    console.log(`Verification code for ${email}: ${verificationCode}`)
+
+    return {
+      message: "New verification code sent",
+      expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+    }
+  },
+
+  forgotPassword: async (data: IForgotPasswordPayload): Promise<IForgotPasswordResponse> => {
+    const { email } = data
+
+    const user = await repository.user.findByEmail(email)
+    if (!user) {
+      return {
+        message: "If the email exists, a reset code has been sent",
+        expires_at: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+      }
+    }
+
+    const resetCode = generateVerificationCode()
+    await repository.verification.create({
+      identifier: `reset:${email}`,
+      value: resetCode,
+      expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+    })
+
+    console.log(`Password reset code for ${email}: ${resetCode}`)
+
+    return {
+      message: "If the email exists, a reset code has been sent",
+      expires_at: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
+    }
+  },
+
+  resetPassword: async (data: IResetPasswordPayload): Promise<IResetPasswordResponse> => {
+    const { email, code, newPassword } = data
+
+    const verification = await repository.verification.findByIdentifierAndValue(
+      `reset:${email}`,
+      code
+    )
+
+    if (!verification) {
+      throw new UnauthorizedError("Invalid reset code")
+    }
+
+    if (verification.expires_at < new Date()) {
+      await repository.verification.deleteByIdentifier(`reset:${email}`)
+      throw new UnauthorizedError("Reset code expired")
+    }
+
+    const user = await repository.user.findByEmail(email)
+    if (!user) {
+      throw new NotFoundError("User not found")
+    }
+
+    const account = await repository.account.findCredentialsAccountByEmail(email)
+    if (!account) {
+      throw new NotFoundError("Account not found")
+    }
+
+    const hashedPassword = await hashPassword(newPassword)
+    await repository.account.update(account.id, { password: hashedPassword })
+
+    await repository.session.deleteByUserId(user.id)
+
+    await repository.verification.deleteByIdentifier(`reset:${email}`)
+
+    return {
+      message: "Password reset successfully. Please login with your new password."
+    }
+  },
+
+  getUserSessions: async (userId: string): Promise<IUserSessionsResponse> => {
+    const sessions = await repository.session.findByUserId(userId)
+
+    const validSessions: ISessionResponse[] = sessions
+      .filter((s) => s.expires_at > new Date())
+      .map((s) => ({
+        id: s.id,
+        expires_at: s.expires_at,
+        ip_address: s.ip_address,
+        user_agent: s.user_agent,
+        created_at: s.created_at,
+        updated_at: s.updated_at,
+      }))
+
+    return {
+      sessions: validSessions
+    }
+  },
+
+  revokeSession: async (userId: string, sessionId: string): Promise<ILogoutResponse> => {
+    const sessions = await repository.session.findByUserId(userId)
+    const session = sessions.find((s) => s.id === sessionId)
+
+    if (!session) {
+      throw new NotFoundError("Session not found")
+    }
+
+    await repository.session.delete(session.token)
+
+    return {
+      message: "Session revoked successfully"
+    }
+  },
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

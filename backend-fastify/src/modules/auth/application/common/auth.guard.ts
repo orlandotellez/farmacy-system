@@ -39,3 +39,12 @@ export const adminGuard = async (
     throw new ForbiddenError("Admin access required")
   }
 }
+
+export const storeGuard = async (
+  request: FastifyRequest,
+  _reply: FastifyReply
+) => {
+  if (!request.storeId) {
+    throw new ForbiddenError("Store context required")
+  }
+}
