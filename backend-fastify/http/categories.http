@@ -1,0 +1,29 @@
+### 
+GET {{apiUrl}}/categories
+
+### 
+GET {{apiUrl}}/categories/paginated?search=anti&page=1&limit=10
+
+### 
+GET {{apiUrl}}/categories/{{categoryId}}
+
+### 
+POST {{apiUrl}}/categories
+Content-Type: application/json
+
+{
+  "name": "Antibióticos",
+  "description": "Medicamentos antimicrobianos"
+}
+
+### 
+PUT {{apiUrl}}/categories/{{categoryId}}
+Content-Type: application/json
+
+{
+  "name": "Antibióticos Actualizado",
+  "description": "Descripción actualizada"
+}
+
+### 
+DELETE {{apiUrl}}/categories/{{categoryId}}

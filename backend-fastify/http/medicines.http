@@ -1,0 +1,61 @@
+### 
+GET {{apiUrl}}/medicines?page=1&limit=10
+
+### 
+GET {{apiUrl}}/medicines?search=panadol&page=1&limit=10
+
+### 
+GET {{apiUrl}}/medicines?category_id={{categoryId}}&page=1&limit=10
+
+### 
+GET {{apiUrl}}/medicines?low_stock=true&page=1&limit=10
+
+### 
+GET {{apiUrl}}/medicines?out_of_stock=true&page=1&limit=10
+
+### 
+GET {{apiUrl}}/medicines?requires_prescription=true&page=1&limit=10
+
+### 
+GET {{apiUrl}}/medicines/barcode/7501008490011
+
+### 
+GET {{apiUrl}}/medicines/{{medicineId}}
+
+### 
+POST {{apiUrl}}/medicines
+Content-Type: application/json
+
+{
+  "barcode": "7501008490011",
+  "internal_code": "MED-00011",
+  "commercial_name": "Panadol 500 mg",
+  "generic_name": "Paracetamol",
+  "active_ingredient": "Paracetamol",
+  "concentration": "500 mg",
+  "presentation": "Caja x 20 tabletas",
+  "pharmaceutical_form": "Tableta",
+  "laboratory": "GSK",
+  "category_id": "{{categoryId}}",
+  "supplier_id": "{{supplierId}}",
+  "unit_type": "caja",
+  "unit_quantity": 20,
+  "purchase_price": 38,
+  "sale_price": 55,
+  "low_stock_threshold": 10,
+  "requires_prescription": false,
+  "is_controlled": false,
+  "active": true
+}
+
+### 
+PUT {{apiUrl}}/medicines/{{medicineId}}
+Content-Type: application/json
+
+{
+  "commercial_name": "Panadol 500 mg Actualizado",
+  "sale_price": 60
+}
+
+### 
+DELETE {{apiUrl}}/medicines/{{medicineId}}

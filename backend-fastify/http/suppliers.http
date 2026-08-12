@@ -1,0 +1,35 @@
+### 
+GET {{apiUrl}}/suppliers?page=1&limit=10
+
+### 
+GET {{apiUrl}}/suppliers?search=CEN&is_active=true&page=1&limit=10
+
+### 
+GET {{apiUrl}}/suppliers/{{supplierId}}
+
+### 
+POST {{apiUrl}}/suppliers
+Content-Type: application/json
+
+{
+  "name": "Laboratorios CEN",
+  "company": "CEN Nicaragua",
+  "ruc": "J0310000020002",
+  "contact_name": "Carlos Ruiz",
+  "email": "comercial@cen.demo",
+  "phone": "2255-2000",
+  "address": "Managua",
+  "is_active": true
+}
+
+### 
+PUT {{apiUrl}}/suppliers/{{supplierId}}
+Content-Type: application/json
+
+{
+  "name": "Laboratorios CEN Actualizado",
+  "phone": "2255-9999"
+}
+
+### 
+DELETE {{apiUrl}}/suppliers/{{supplierId}}
