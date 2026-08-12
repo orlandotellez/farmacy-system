@@ -1,0 +1,74 @@
+### 
+GET {{apiUrl}}/inventory/batches?page=1&limit=10
+
+### 
+GET {{apiUrl}}/inventory/batches?search=LOTE&expiring_soon=true&page=1&limit=10
+
+### 
+GET {{apiUrl}}/inventory/batches/expiring
+
+### 
+GET {{apiUrl}}/inventory/batches/expired
+
+### 
+GET {{apiUrl}}/inventory/batches/{{batchId}}
+
+### 
+POST {{apiUrl}}/inventory/batches
+Content-Type: application/json
+
+{
+  "batch_number": "LOTE-MAN-01",
+  "medicine_id": "{{medicineId}}",
+  "supplier_id": "{{supplierId}}",
+  "manufacture_date": "2026-01-01",
+  "expiry_date": "2027-01-01",
+  "quantity": 10,
+  "unit_cost": 38,
+  "notes": "Entrada manual"
+}
+
+### 
+PUT {{apiUrl}}/inventory/batches/{{batchId}}
+Content-Type: application/json
+
+{
+  "quantity": 8,
+  "notes": "Ajuste por conteo físico"
+}
+
+### 
+GET {{apiUrl}}/inventory?page=1&limit=10
+
+### 
+GET {{apiUrl}}/inventory?medicine_id={{medicineId}}&movement_type=entrada&page=1&limit=10
+
+### 
+GET {{apiUrl}}/inventory/product/{{medicineId}}
+
+### 
+GET {{apiUrl}}/inventory/low-stock
+
+### 
+POST {{apiUrl}}/inventory
+Content-Type: application/json
+
+{
+  "medicine_id": "{{medicineId}}",
+  "movement_type": "ajuste",
+  "quantity": -2,
+  "note": "Conteo físico",
+  "batch_id": "{{batchId}}"
+}
+
+### 
+POST {{apiUrl}}/inventory
+Content-Type: application/json
+
+{
+  "medicine_id": "{{medicineId}}",
+  "movement_type": "merma",
+  "quantity": 1,
+  "note": "Producto dañado",
+  "batch_id": "{{batchId}}"
+}

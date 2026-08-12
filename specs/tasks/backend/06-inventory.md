@@ -1,28 +1,28 @@
 # Tareas de Backend — Feature 06: Inventario (Lotes y Movimientos)
 
 ## Estado Actual
-- **Módulo batch-inventory** (ruta `/inventory/batches`): list con filtros, getById, create (entrada manual).
-- **Módulo inventory**: movimientos con filtros, por producto, low-stock, create manual.
+- **Módulo batch-inventory** (ruta `/inventory/batches`): list con filtros, getById, create/update manuales y alertas de vencimiento.
+- **Módulo inventory**: movimientos con filtros, historial por producto, low-stock y create manual transaccional.
 
 ---
 
 ## Checklist de Tareas Backend
 
 ### 1. Lotes
-- [ ] Implementar `GET /inventory/batches` (search, medicine, supplier, expiring, expired).
-- [ ] Implementar `GET /inventory/batches/:id`.
-- [ ] Implementar `POST /inventory/batches` (entrada manual: valida fecha futura, suma stock).
-- [ ] Implementar `PUT /inventory/batches/:id` (ajuste: si cambia quantity → movimiento de inventario).
-- [ ] Implementar `GET /inventory/batches/expiring` y `/expired` (dedicados, hoy vía query param).
+- [x] Implementar `GET /inventory/batches` (search, medicine, supplier, expiring, expired).
+- [x] Implementar `GET /inventory/batches/:id`.
+- [x] Implementar `POST /inventory/batches` (entrada manual: valida fecha futura, suma stock y registra entrada).
+- [x] Implementar `PUT /inventory/batches/:id` (ajuste: si cambia quantity → movimiento de inventario y sincronización de stock).
+- [x] Implementar `GET /inventory/batches/expiring` y `/expired` (rutas dedicadas).
 
 ### 2. Movimientos
-- [ ] Implementar `GET /inventory` (filtros por tipo/rango/medicamento).
-- [ ] Implementar `GET /inventory/product/:medicineId` (historial por producto).
-- [ ] Implementar `GET /inventory/low-stock`.
-- [ ] Implementar `POST /inventory` (ajuste ±, merma, salida; nunca stock negativo).
+- [x] Implementar `GET /inventory` (búsqueda, filtros por tipo/rango/medicamento y paginación).
+- [x] Implementar `GET /inventory/product/:medicineId` (historial por producto).
+- [x] Implementar `GET /inventory/low-stock` (incluye agotados).
+- [x] Implementar `POST /inventory` (ajuste ±, merma, salida, entrada y devolución; nunca stock negativo).
 
 ### 3. Pendientes / Mejoras
-- [ ] Validar que `salida|venta|merma` no exceda stock disponible (hoy se valida en ventas; reforzar en movimientos manuales).
-- [ ] RBAC: solo `bodeguero|admin` crean movimientos.
-- [ ] Refactor de batch-inventory a service+repository consistente (ya lo es parcialmente).
-- [ ] Tests de FEFO, expiring/expired y de la consistencia de stock.
+- [x] Validar que `salida|venta|merma` no exceda stock disponible, incluyendo lote cuando se especifica.
+- [ ] RBAC: solo `bodeguero|admin` crean lotes y movimientos.
+- [x] Refactor de batch-inventory a service+repository consistente con el resto del backend.
+- [ ] Tests automatizados de FEFO, expiring/expired y consistencia de stock.

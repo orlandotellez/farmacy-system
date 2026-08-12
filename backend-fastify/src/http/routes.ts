@@ -6,6 +6,8 @@ import { medicinesRoutes } from "@/modules/medicines/presentation/medicines.rout
 import { clientsRoutes } from "@/modules/clients/presentation/clients.routes"
 import { prescriptionsRoutes } from "@/modules/prescriptions/presentation/prescriptions.routes"
 import { purchasesRoutes } from "@/modules/purchases/presentation/purchases.routes"
+import { batchInventoryRoutes } from "@/modules/batch-inventory/presentation/batch-inventory.routes"
+import { inventoryRoutes } from "@/modules/inventory/presentation/inventory.routes"
 import { FastifyInstance, FastifyPluginOptions } from "fastify"
 
 export const routes = async (fastify: FastifyInstance, _opts: FastifyPluginOptions) => {
@@ -17,5 +19,7 @@ export const routes = async (fastify: FastifyInstance, _opts: FastifyPluginOptio
   fastify.register(clientsRoutes, { prefix: "/clients" })
   fastify.register(prescriptionsRoutes, { prefix: "/prescriptions" })
   fastify.register(purchasesRoutes, { prefix: "/purchases" })
+  fastify.register(batchInventoryRoutes, { prefix: "/inventory/batches" })
+  fastify.register(inventoryRoutes, { prefix: "/inventory" })
 }
 

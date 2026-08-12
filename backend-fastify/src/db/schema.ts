@@ -405,7 +405,8 @@ export const inventoryMovement = pgTable("inventory_movement", {
     index("idx_inventory_movement_medicine_id").on(table.medicineId),
     index("idx_inventory_movement_batch_id").on(table.batchId),
     index("idx_inventory_movement_store_created_at").on(table.storeId, table.createdAt),
-    index("idx_inventory_movement_store_movement_type").on(table.storeId, table.movementType)
+    index("idx_inventory_movement_store_movement_type").on(table.storeId, table.movementType),
+    index("idx_inventory_movement_store_medicine_created_at").on(table.storeId, table.medicineId, table.createdAt)
   ]
 );
 

@@ -1,0 +1,1 @@
+CREATE INDEX "idx_inventory_movement_store_medicine_created_at" ON "inventory_movement" ("store_id","medicine_id","created_at");
