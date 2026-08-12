@@ -1,9 +1,19 @@
 import { authRoutes } from "@/modules/auth/presentation/auth.routes"
 import { usersRoutes } from "@/modules/users/presentation/users.routes"
+import { categoriesRoutes } from "@/modules/categories/presentation/categories.routes"
+import { suppliersRoutes } from "@/modules/suppliers/presentation/suppliers.routes"
+import { medicinesRoutes } from "@/modules/medicines/presentation/medicines.routes"
+import { clientsRoutes } from "@/modules/clients/presentation/clients.routes"
+import { prescriptionsRoutes } from "@/modules/prescriptions/presentation/prescriptions.routes"
 import { FastifyInstance, FastifyPluginOptions } from "fastify"
 
 export const routes = async (fastify: FastifyInstance, _opts: FastifyPluginOptions) => {
   fastify.register(authRoutes, { prefix: "/auth" })
   fastify.register(usersRoutes, { prefix: "/users" })
+  fastify.register(categoriesRoutes, { prefix: "/categories" })
+  fastify.register(suppliersRoutes, { prefix: "/suppliers" })
+  fastify.register(medicinesRoutes, { prefix: "/medicines" })
+  fastify.register(clientsRoutes, { prefix: "/clients" })
+  fastify.register(prescriptionsRoutes, { prefix: "/prescriptions" })
 }
 

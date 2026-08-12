@@ -1,0 +1,42 @@
+### 
+GET {{apiUrl}}/clients?page=1&limit=10
+
+### 
+GET {{apiUrl}}/clients?search=Maria&page=1&limit=10
+
+### 
+GET {{apiUrl}}/clients?is_frequent=true&page=1&limit=10
+
+### 
+GET {{apiUrl}}/clients/{{clientId}}
+
+### 
+GET {{apiUrl}}/clients/{{clientId}}/history
+
+### 
+POST {{apiUrl}}/clients
+Content-Type: application/json
+
+{
+  "full_name": "María González",
+  "document_type": "cedula",
+  "document_number": "001-120390-1000A",
+  "phone": "8888-1000",
+  "email": "maria.demo@test.com",
+  "address": "Managua",
+  "sex": "F",
+  "allergies": "Penicilina",
+  "is_frequent": true
+}
+
+### 
+PUT {{apiUrl}}/clients/{{clientId}}
+Content-Type: application/json
+
+{
+  "full_name": "María González Actualizada",
+  "phone": "8888-9999"
+}
+
+### 
+DELETE {{apiUrl}}/clients/{{clientId}}
