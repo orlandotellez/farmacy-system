@@ -79,7 +79,12 @@ export const session = pgTable("session", {
   updatedAt: timestamp("updated_at", {
     withTimezone: true
   }).notNull().defaultNow().$onUpdate(() => new Date())
-})
+},
+  (table) => [
+    uniqueIndex("uq_session_token").on(table.token),
+    index("idx_session_user_id").on(table.userId)
+  ]
+)
 
 export const account = pgTable("account", {
   id: uuid("id").primaryKey(),
@@ -119,4 +124,8 @@ export const verificacion = pgTable("verification", {
   updatedAt: timestamp("updated_at", {
     withTimezone: true
   }).notNull().defaultNow().$onUpdate(() => new Date())
-})
+},
+  (table) => [
+    index("idx_verification_identifier_expires_at").on(table.identifier, table.expiresAt)
+  ]
+)
