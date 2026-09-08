@@ -80,7 +80,7 @@ describe("PrinterService", () => {
   beforeEach(() => {
     repo = mockPrinterRepository()
     service = createPrintersService(repo)
-    vi.mocked(sendBytesViaTCP).mockResolvedValue({ success: true })
+      vi.mocked(sendBytesViaTCP).mockResolvedValue({ success: true, bytes_sent: 0, duration_ms: 0 })
   })
 
   describe("list", () => {
@@ -305,7 +305,7 @@ describe("PrinterService", () => {
 
   describe("sendTcp", () => {
     it("forwards base64 bytes to the TCP transport", async () => {
-      vi.mocked(sendBytesViaTCP).mockResolvedValue({ success: true })
+    vi.mocked(sendBytesViaTCP).mockResolvedValue({ success: true, bytes_sent: 0, duration_ms: 0 })
 
       const encoded = Buffer.from("ticket-bytes").toString("base64")
       await service.sendTcp(encoded, "192.168.1.50", 9100)
@@ -339,7 +339,7 @@ describe("PrinterService", () => {
     })
 
     it("marks the job as failed and the printer offline when TCP fails", async () => {
-      vi.mocked(sendBytesViaTCP).mockResolvedValue({ success: false, error: "ECONNREFUSED" })
+      vi.mocked(sendBytesViaTCP).mockResolvedValue({ success: false, error: "ECONNREFUSED", bytes_sent: 0, duration_ms: 0 })
 
       const result = await service.printReceipt("printer-1", "store-1", "sale-1", 1)
 
