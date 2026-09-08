@@ -1,0 +1,89 @@
+@baseUrl = {{host}}/api/v1
+@token = {{authToken}}
+
+### Listar impresoras
+GET {{baseUrl}}/printers
+Authorization: Bearer {{token}}
+
+### Crear impresora TCP
+POST {{baseUrl}}/printers
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Impresora Caja 1",
+  "connection_type": "net",
+  "address": "192.168.1.50",
+  "port": 9100,
+  "paper_width": 80,
+  "profile": "escpos",
+  "codepage": "PC850",
+  "auto_cut": true,
+  "cut_type": "full",
+  "open_cash_drawer": false,
+  "default_copies": 1,
+  "role": "receipt",
+  "is_default": true
+}
+
+### Detalle de impresora
+GET {{baseUrl}}/printers/{{printerId}}
+Authorization: Bearer {{token}}
+
+### Actualizar impresora
+PATCH {{baseUrl}}/printers/{{printerId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Impresora Caja Principal",
+  "auto_cut": false
+}
+
+### Marcar como predeterminada por rol
+POST {{baseUrl}}/printers/{{printerId}}/set-default
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "role": "receipt"
+}
+
+### Generar ticket de prueba
+POST {{baseUrl}}/printers/{{printerId}}/test
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "copies": 1
+}
+
+### Generar probe de codepage
+POST {{baseUrl}}/printers/{{printerId}}/probe
+Authorization: Bearer {{token}}
+
+### Imprimir recibo de una venta
+POST {{baseUrl}}/printers/{{printerId}}/print-receipt
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "sale_id": "{{saleId}}",
+  "copies": 1,
+  "currency": "NIO"
+}
+
+### Enviar payload TCP directo
+POST {{baseUrl}}/printers/send-tcp
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "address": "192.168.1.50",
+  "port": 9100,
+  "ticket_base64": "REEMPLAZAR_CON_BASE64"
+}
+
+### Eliminar impresora (soft delete)
+DELETE {{baseUrl}}/printers/{{printerId}}
+Authorization: Bearer {{token}}

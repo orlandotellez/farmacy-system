@@ -13,20 +13,20 @@
 ## Checklist de Tareas Backend
 
 ### 1. CRUD
-- [ ] Implementar CRUD de impresoras con validación de unicidad `(store_id, name)`.
-- [ ] Soft-delete.
+- [x] Implementar CRUD de impresoras con validación de unicidad `(store_id, name)`.
+- [x] Soft-delete (con regla: no borrar la única activa del rol ni la predeterminada).
 
 ### 2. Conexión y Pruebas
-- [ ] Implementar `POST /:id/probe` (actualiza `last_status`, `last_seen_at`).
-- [ ] Implementar `POST /:id/test` (imprime texto de prueba).
-- [ ] Implementar `POST /send-tcp` (payload directo).
+- [x] Implementar `POST /:id/probe` (probe de codepage; `last_status`/`last_seen_at` se actualizan al imprimir/enviar).
+- [x] Implementar `POST /:id/test` (imprime texto de prueba).
+- [x] Implementar `POST /send-tcp` (payload directo).
 
 ### 3. Impresión de Recibos
-- [ ] Implementar `POST /:id/print-receipt`:
-  - [ ] Buscar venta + impresora.
-  - [ ] Generar payload ESC/POS (58/80 mm, codepage, corte, cajón).
-  - [ ] Encolar `print_job` y enviar con reintentos (max 3).
-  - [ ] Actualizar estado de la impresora.
+- [x] Implementar `POST /:id/print-receipt`:
+  - [x] Buscar venta + impresora.
+  - [x] Generar payload ESC/POS (58/80 mm, codepage, corte, cajón).
+  - [x] Crear `print_job` y enviar; actualizar estado del job y de la impresora.
+  - [ ] Reintentos (max 3) sobre el job en cola — hoy el envío es directo con un intento.
 
 ### 4. Pendientes / Mejoras
 - [ ] **Cola real de impresión**: hoy el envío es directo; implementar worker/procesador de `print_jobs` pendientes.

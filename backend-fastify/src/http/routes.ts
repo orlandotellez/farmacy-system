@@ -11,6 +11,7 @@ import { inventoryRoutes } from "@/modules/inventory/presentation/inventory.rout
 import { salesRoutes } from "@/modules/sales/presentation/sales.routes"
 import { invoicesRoutes } from "@/modules/invoices/presentation/invoices.routes"
 import { reportsRoutes } from "@/modules/reports/presentation/reports.routes"
+import { printersRoutes } from "@/modules/printers/presentation/printers.routes"
 import { FastifyInstance, FastifyPluginOptions } from "fastify"
 
 export const routes = async (fastify: FastifyInstance, _opts: FastifyPluginOptions) => {
@@ -27,5 +28,6 @@ export const routes = async (fastify: FastifyInstance, _opts: FastifyPluginOptio
   fastify.register(salesRoutes, { prefix: "/sales" })
   fastify.register(invoicesRoutes, { prefix: "/invoices" })
   fastify.register(reportsRoutes, { prefix: "/reports" })
+  fastify.register(printersRoutes, { prefix: "/printers" })
 }
 
