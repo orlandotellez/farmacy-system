@@ -5,6 +5,7 @@ import { hashPassword, comparePassword, generateVerificationCode } from "../appl
 import { generateTokens, verifyToken } from "../application/common/auth.token"
 import type { IAuthRepository } from "../domain/auth.interface"
 import type { IUserEntity, ISessionEntity, IVerificationEntity } from "../domain/auth.entities"
+import type { IEmailSender } from "@/modules/email/domain/email.types"
 
 vi.mock("@/config/env", () => ({
   env: {
@@ -13,6 +14,10 @@ vi.mock("@/config/env", () => ({
     JWT_EXPIRES_IN: "15m",
     JWT_REFRESH_EXPIRES_IN: "7d",
   },
+}))
+
+vi.mock("@/config/logger", () => ({
+  logger: { warn: vi.fn() },
 }))
 
 vi.mock("../application/common/auth.crypto", () => ({
@@ -110,13 +115,22 @@ function mockAuthRepository(overrides?: Partial<IAuthRepository>): IAuthReposito
   return { ...base, ...overrides } as IAuthRepository
 }
 
+function mockEmailSender(overrides?: Partial<IEmailSender>): IEmailSender {
+  return {
+    send: vi.fn().mockResolvedValue(undefined),
+    ...overrides,
+  } as IEmailSender
+}
+
 describe("AuthService", () => {
   let repo: IAuthRepository
+  let emailSender: IEmailSender
   let service: ReturnType<typeof createAuthService>
 
   beforeEach(() => {
     repo = mockAuthRepository()
-    service = createAuthService(repo)
+    emailSender = mockEmailSender()
+    service = createAuthService(repo, emailSender)
     vi.mocked(comparePassword).mockResolvedValue(true)
     vi.mocked(hashPassword).mockResolvedValue("hashed-password")
     vi.mocked(generateVerificationCode).mockReturnValue("123456")
@@ -196,6 +210,11 @@ describe("AuthService", () => {
       expect(repo.verification.create).toHaveBeenCalledWith(
         expect.objectContaining({ identifier: "ana@mail.com", value: "123456" })
       )
+      expect(emailSender.send).toHaveBeenCalledTimes(1)
+      const sentMessage = vi.mocked(emailSender.send).mock.calls[0]![0]
+      expect(sentMessage.to).toBe("ana@mail.com")
+      expect(sentMessage.subject).toBe("Verify your email")
+      expect(sentMessage.text).toContain("123456")
       expect(result.message).toContain("verify your email")
     })
 
@@ -208,6 +227,19 @@ describe("AuthService", () => {
       expect(repo.user.create).toHaveBeenCalledWith(
         expect.objectContaining({ role: "farmaceutico" })
       )
+    })
+
+    it("resolves normally when sending the email fails", async () => {
+      vi.mocked(emailSender.send).mockRejectedValueOnce(new Error("SMTP down"))
+
+      const result = await service.register(
+        { name: "Ana", email: "ana@mail.com", password: "secret" },
+        "store-1"
+      )
+
+      expect(emailSender.send).toHaveBeenCalledTimes(1)
+      expect(result.message).toContain("verify your email")
+      expect(result.accessToken).toBe("access-token")
     })
   })
 
@@ -363,6 +395,21 @@ describe("AuthService", () => {
       expect(repo.verification.create).toHaveBeenCalledWith(
         expect.objectContaining({ identifier: "ana@mail.com", value: "123456" })
       )
+      expect(emailSender.send).toHaveBeenCalledTimes(1)
+      const sentMessage = vi.mocked(emailSender.send).mock.calls[0]![0]
+      expect(sentMessage.to).toBe("ana@mail.com")
+      expect(sentMessage.subject).toBe("Verify your email")
+      expect(sentMessage.text).toContain("123456")
+      expect(result.message).toBe("New verification code sent")
+    })
+
+    it("resolves normally when sending the email fails", async () => {
+      vi.mocked(repo.user.findByEmail).mockResolvedValue(makeUser())
+      vi.mocked(emailSender.send).mockRejectedValueOnce(new Error("SMTP down"))
+
+      const result = await service.resendVerification("ana@mail.com")
+
+      expect(emailSender.send).toHaveBeenCalledTimes(1)
       expect(result.message).toBe("New verification code sent")
     })
   })
@@ -385,6 +432,21 @@ describe("AuthService", () => {
       expect(repo.verification.create).toHaveBeenCalledWith(
         expect.objectContaining({ identifier: "reset:ana@mail.com", value: "123456" })
       )
+      expect(emailSender.send).toHaveBeenCalledTimes(1)
+      const sentMessage = vi.mocked(emailSender.send).mock.calls[0]![0]
+      expect(sentMessage.to).toBe("ana@mail.com")
+      expect(sentMessage.subject).toBe("Password reset code")
+      expect(sentMessage.text).toContain("123456")
+    })
+
+    it("returns the generic anti-enumeration message when sending fails", async () => {
+      vi.mocked(repo.user.findByEmail).mockResolvedValue(makeUser())
+      vi.mocked(emailSender.send).mockRejectedValueOnce(new Error("SMTP down"))
+
+      const result = await service.forgotPassword({ email: "ana@mail.com" })
+
+      expect(emailSender.send).toHaveBeenCalledTimes(1)
+      expect(result.message).toContain("If the email exists")
     })
   })
 

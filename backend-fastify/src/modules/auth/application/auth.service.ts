@@ -23,11 +23,13 @@ import {
 } from "../domain/auth.types";
 import { mapUserToResponse } from "./common/auth.mappers";
 import { env } from "@/config/env";
+import { logger } from "@/config/logger";
+import type { IEmailSender } from "@/modules/email/domain/email.types";
 
 const SESSION_EXPIRY = 7 * 24 * 60 * 60 * 1000;
 const VERIFICATION_CODE_EXPIRY = 15 * 60 * 1000;
 
-export const createAuthService = (repository: IAuthRepository) => ({
+export const createAuthService = (repository: IAuthRepository, emailSender: IEmailSender) => ({
   registerStore: async (
     data: IRegisterStorePayload,
   ): Promise<IRegisterStoreResponse> => {
@@ -126,7 +128,15 @@ export const createAuthService = (repository: IAuthRepository) => ({
       expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY),
     });
 
-    console.log(`Verification code for ${email}: ${verificationCode}`);
+    try {
+      await emailSender.send({
+        to: email,
+        subject: "Verify your email",
+        text: `Your verification code is: ${verificationCode}`,
+      });
+    } catch (error) {
+      logger.warn({ error }, "Failed to send verification email");
+    }
 
     const store = await repository.store.getStoreInfo(storeId);
     const { accessToken, refreshToken } = generateTokens({
@@ -321,7 +331,15 @@ export const createAuthService = (repository: IAuthRepository) => ({
       expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
     })
 
-    console.log(`Verification code for ${email}: ${verificationCode}`)
+    try {
+      await emailSender.send({
+        to: email,
+        subject: "Verify your email",
+        text: `Your new verification code is: ${verificationCode}`,
+      });
+    } catch (error) {
+      logger.warn({ error }, "Failed to send verification email");
+    }
 
     return {
       message: "New verification code sent",
@@ -347,7 +365,15 @@ export const createAuthService = (repository: IAuthRepository) => ({
       expiresAt: new Date(Date.now() + VERIFICATION_CODE_EXPIRY)
     })
 
-    console.log(`Password reset code for ${email}: ${resetCode}`)
+    try {
+      await emailSender.send({
+        to: email,
+        subject: "Password reset code",
+        text: `Your password reset code is: ${resetCode}`,
+      });
+    } catch (error) {
+      logger.warn({ error }, "Failed to send password reset email");
+    }
 
     return {
       message: "If the email exists, a reset code has been sent",

@@ -15,8 +15,9 @@ import { env } from "@/config/env"
 import { authRepository } from "../infrastructure/auth.repository"
 import { resolveCurrentUserId } from "../application/common/auth.utils"
 import { ConflictError, UnauthorizedError } from "@/core/errors/AppError"
+import { emailSender } from "@/modules/email"
 
-const authService = createAuthService(authRepository)
+const authService = createAuthService(authRepository, emailSender)
 
 
 export const authController = {
