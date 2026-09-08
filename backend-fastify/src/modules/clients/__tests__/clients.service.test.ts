@@ -2,30 +2,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest"
 import { createClientService } from "../application/clients.service"
 import { BadRequestError, NotFoundError } from "@/core/errors/AppError"
 import type { IClientRepository } from "../domain/clients.interface"
-import type { IClientEntity } from "../domain/clients.entities"
-
-function makeClient(overrides?: Partial<IClientEntity>): IClientEntity {
-  return {
-    id: "client-1",
-    full_name: "Juan Perez",
-    document_type: "DNI",
-    is_frequent: false,
-    created_at: new Date("2026-01-15T10:00:00Z"),
-    updated_at: new Date("2026-01-15T10:00:00Z"),
-    ...overrides,
-  }
-}
-
-function mockClientRepository(overrides?: Partial<IClientRepository>): IClientRepository {
-  return {
-    findAll: vi.fn().mockResolvedValue({ clients: [makeClient()], total: 1, page: 1, limit: 10 }),
-    findById: vi.fn().mockResolvedValue(makeClient()),
-    create: vi.fn().mockResolvedValue(makeClient()),
-    update: vi.fn().mockResolvedValue(makeClient()),
-    softDelete: vi.fn().mockResolvedValue(undefined),
-    ...overrides,
-  }
-}
+import { makeClient, mockClientRepository } from "@/__tests__/helpers"
 
 describe("ClientService", () => {
   let repo: IClientRepository
@@ -122,7 +99,11 @@ describe("ClientService", () => {
       await expect(service.getHistory("client-x", "store-1")).rejects.toThrow(NotFoundError)
     })
 
-    it("returns an empty history summary for now", async () => {
+    it("returns zeros and empty arrays when the client has no data", async () => {
+      vi.mocked(repo.findSalesByClient).mockResolvedValue([])
+      vi.mocked(repo.findPrescriptionsByClient).mockResolvedValue([])
+      vi.mocked(repo.findFrequentProductsByClient).mockResolvedValue([])
+
       const result = await service.getHistory("client-1", "store-1")
 
       expect(result.client.full_name).toBe("Juan Perez")
@@ -131,6 +112,87 @@ describe("ClientService", () => {
       expect(result.total_spent).toBe(0)
       expect(result.visit_count).toBe(0)
       expect(result.frequent_products).toEqual([])
+    })
+
+    it("aggregates total_spent and visit_count from completada sales", async () => {
+      vi.mocked(repo.findSalesByClient).mockResolvedValue([
+        { id: "sale-1", total: 100, created_at: "2026-01-15T10:00:00.000Z", payment_method: "efectivo" },
+        { id: "sale-2", total: 200, created_at: "2026-01-14T10:00:00.000Z", payment_method: "tarjeta" },
+        { id: "sale-3", total: 50, created_at: "2026-01-13T10:00:00.000Z", payment_method: "efectivo" },
+      ])
+
+      const result = await service.getHistory("client-1", "store-1")
+
+      expect(result.total_spent).toBe(350)
+      expect(result.visit_count).toBe(3)
+      // rows are mapped to the IClientSaleSummary subtype (payment_method dropped)
+      expect(result.sales).toEqual([
+        { id: "sale-1", total: 100, created_at: "2026-01-15T10:00:00.000Z" },
+        { id: "sale-2", total: 200, created_at: "2026-01-14T10:00:00.000Z" },
+        { id: "sale-3", total: 50, created_at: "2026-01-13T10:00:00.000Z" },
+      ])
+    })
+
+    it("excludes anulada sales from total_spent and visit_count (repo filters completada only)", async () => {
+      // anulada rows never reach the service: the repository filters status='completada'
+      vi.mocked(repo.findSalesByClient).mockResolvedValue([
+        { id: "sale-1", total: 300, created_at: "2026-01-15T10:00:00.000Z", payment_method: "efectivo" },
+      ])
+
+      const result = await service.getHistory("client-1", "store-1")
+
+      expect(result.total_spent).toBe(300)
+      expect(result.visit_count).toBe(1)
+      expect(result.sales).toHaveLength(1)
+    })
+
+    it("passes through only non-deleted prescriptions", async () => {
+      // soft-deleted rows never reach the service: the repository filters deletedAt IS NULL
+      vi.mocked(repo.findPrescriptionsByClient).mockResolvedValue([
+        { id: "rx-1", number: "RX-001", status: "validada" },
+        { id: "rx-2", number: "RX-002", status: "pendiente" },
+      ])
+
+      const result = await service.getHistory("client-1", "store-1")
+
+      expect(result.prescriptions).toEqual([
+        { id: "rx-1", number: "RX-001", status: "validada" },
+        { id: "rx-2", number: "RX-002", status: "pendiente" },
+      ])
+    })
+
+    it("passes through the top-5 frequent products in descending order", async () => {
+      vi.mocked(repo.findFrequentProductsByClient).mockResolvedValue([
+        { medicine_id: "med-a", medicine_name: "A", quantity: 10 },
+        { medicine_id: "med-b", medicine_name: "B", quantity: 5 },
+        { medicine_id: "med-c", medicine_name: "C", quantity: 3 },
+        { medicine_id: "med-d", medicine_name: "D", quantity: 2 },
+        { medicine_id: "med-e", medicine_name: "E", quantity: 1 },
+      ])
+
+      const result = await service.getHistory("client-1", "store-1")
+
+      expect(result.frequent_products).toHaveLength(5)
+      expect(result.frequent_products.map((product) => product.medicine_id)).toEqual([
+        "med-a",
+        "med-b",
+        "med-c",
+        "med-d",
+        "med-e",
+      ])
+    })
+
+    it("sums string totals numerically (Postgres numeric returns strings)", async () => {
+      vi.mocked(repo.findSalesByClient).mockResolvedValue([
+        { id: "sale-1", total: "123.45" as unknown as number, created_at: "2026-01-15T10:00:00.000Z", payment_method: "efectivo" },
+        { id: "sale-2", total: "76.55" as unknown as number, created_at: "2026-01-14T10:00:00.000Z", payment_method: "efectivo" },
+      ])
+
+      const result = await service.getHistory("client-1", "store-1")
+
+      expect(result.total_spent).toBe(200)
+      expect(result.sales[0]?.total).toBe(123.45)
+      expect(typeof result.sales[0]?.total).toBe("number")
     })
   })
 })

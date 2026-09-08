@@ -1,7 +1,7 @@
 import { BadRequestError, NotFoundError } from "@/core/errors/AppError"
 import type { IClientRepository } from "../domain/clients.interface"
 import type { CreateClientData, IClientEntity, UpdateClientData } from "../domain/clients.entities"
-import type { IClientHistoryResponse, IClientListResponse, IClientResponse } from "../domain/clients.types"
+import type { IClientHistoryResponse, IClientListResponse, IClientResponse, IClientSaleSummary } from "../domain/clients.types"
 import { mapClient } from "./common/clients.mappers"
 
 async function findOrThrow(repository: IClientRepository, id: string, storeId: string): Promise<IClientEntity> {
@@ -38,14 +38,27 @@ export const createClientService = (repository: IClientRepository) => ({
   getHistory: async (id: string, storeId: string): Promise<IClientHistoryResponse> => {
     const client = mapClient(await findOrThrow(repository, id, storeId))
 
-    // NOTE: ventas y recetas se poblarán con las features 07 (sales) y 04 (prescriptions).
+    // El repositorio ya filtra status='completada' para ventas y deletedAt IS NULL
+    // para recetas; el servicio solo agrega sobre filas ya filtradas.
+    const [sales, prescriptions, frequent_products] = await Promise.all([
+      repository.findSalesByClient(id, storeId),
+      repository.findPrescriptionsByClient(id, storeId),
+      repository.findFrequentProductsByClient(id, storeId),
+    ])
+
+    const saleSummaries: IClientSaleSummary[] = sales.map((sale) => ({
+      id: sale.id,
+      total: Number(sale.total),
+      created_at: sale.created_at,
+    }))
+
     return {
       client,
-      sales: [],
-      prescriptions: [],
-      total_spent: 0,
-      visit_count: 0,
-      frequent_products: [],
+      sales: saleSummaries,
+      prescriptions,
+      total_spent: sales.reduce((sum, sale) => sum + Number(sale.total), 0),
+      visit_count: sales.length,
+      frequent_products,
     }
   },
 })

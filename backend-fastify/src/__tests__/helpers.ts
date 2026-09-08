@@ -10,6 +10,8 @@ import type { ISaleRepository } from "@/modules/sales/domain/sales.interface"
 import type { ICategoryEntity } from "@/modules/categories/domain/categories.entities"
 import type { ICategoryRepository } from "@/modules/categories/domain/categories.interface"
 import type { IMedicineEntity } from "@/modules/medicines/domain/medicines.entities"
+import type { IClientEntity } from "@/modules/clients/domain/clients.entities"
+import type { IClientRepository } from "@/modules/clients/domain/clients.interface"
 
 // ─── IDs ────────────────────────────────────────────────────────────────
 
@@ -140,6 +142,34 @@ export function mockCategoryRepository(overrides?: Partial<ICategoryRepository>)
     create: vi.fn().mockResolvedValue(makeCategory()),
     update: vi.fn().mockResolvedValue(makeCategory()),
     softDelete: vi.fn().mockResolvedValue(undefined),
+    ...overrides,
+  }
+}
+
+// ─── Client factories ───────────────────────────────────────────────────
+
+export function makeClient(overrides?: Partial<IClientEntity>): IClientEntity {
+  return {
+    id: "client-1",
+    full_name: "Juan Perez",
+    document_type: "DNI",
+    is_frequent: false,
+    created_at: new Date("2026-01-15T10:00:00Z"),
+    updated_at: new Date("2026-01-15T10:00:00Z"),
+    ...overrides,
+  }
+}
+
+export function mockClientRepository(overrides?: Partial<IClientRepository>): IClientRepository {
+  return {
+    findAll: vi.fn().mockResolvedValue({ clients: [makeClient()], total: 1, page: 1, limit: 10 }),
+    findById: vi.fn().mockResolvedValue(makeClient()),
+    create: vi.fn().mockResolvedValue(makeClient()),
+    update: vi.fn().mockResolvedValue(makeClient()),
+    softDelete: vi.fn().mockResolvedValue(undefined),
+    findSalesByClient: vi.fn().mockResolvedValue([]),
+    findPrescriptionsByClient: vi.fn().mockResolvedValue([]),
+    findFrequentProductsByClient: vi.fn().mockResolvedValue([]),
     ...overrides,
   }
 }

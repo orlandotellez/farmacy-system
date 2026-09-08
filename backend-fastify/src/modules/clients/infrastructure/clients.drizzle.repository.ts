@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
-import { and, asc, count, eq, ilike, isNull, or } from "drizzle-orm";
-import { client } from "@/db/schema";
+import { and, asc, count, desc, eq, ilike, inArray, isNull, or, sql } from "drizzle-orm";
+import { client, prescription, sale, saleItem } from "@/db/schema";
 import { db } from "@/index";
 import { IClientRepository } from "../domain/clients.interface";
 import { IClientEntity, CreateClientData, UpdateClientData } from "../domain/clients.entities";
@@ -149,5 +149,90 @@ export const ClientRepository: IClientRepository = {
           isNull(client.deletedAt),
         ),
       );
+  },
+
+  async findSalesByClient(id: string, storeId: string) {
+    const rows = await db
+      .select({
+        id: sale.id,
+        total: sale.total,
+        created_at: sale.createdAt,
+        payment_method: sale.paymentMethod,
+      })
+      .from(sale)
+      .where(
+        and(
+          eq(sale.clientId, id),
+          eq(sale.storeId, storeId),
+          eq(sale.status, "completada"),
+        ),
+      )
+      .orderBy(desc(sale.createdAt));
+
+    return rows.map((row) => ({
+      id: row.id,
+      total: Number(row.total),
+      created_at: row.created_at.toISOString(),
+      payment_method: row.payment_method,
+    }));
+  },
+
+  async findPrescriptionsByClient(id: string, storeId: string) {
+    const rows = await db
+      .select({
+        id: prescription.id,
+        number: prescription.number,
+        status: prescription.status,
+      })
+      .from(prescription)
+      .where(
+        and(
+          eq(prescription.clientId, id),
+          eq(prescription.storeId, storeId),
+          isNull(prescription.deletedAt),
+        ),
+      )
+      .orderBy(desc(prescription.createdAt));
+
+    return rows.map((row) => ({
+      id: row.id,
+      number: row.number,
+      status: row.status,
+    }));
+  },
+
+  async findFrequentProductsByClient(id: string, storeId: string) {
+    const sales = await db
+      .select({ id: sale.id })
+      .from(sale)
+      .where(
+        and(
+          eq(sale.clientId, id),
+          eq(sale.storeId, storeId),
+          eq(sale.status, "completada"),
+        ),
+      );
+
+    if (sales.length === 0) return [];
+
+    const totalQuantity = sql<number>`SUM(${saleItem.quantity})::int`;
+
+    const rows = await db
+      .select({
+        medicine_id: saleItem.medicineId,
+        medicine_name: saleItem.medicineName,
+        quantity: totalQuantity,
+      })
+      .from(saleItem)
+      .where(inArray(saleItem.saleId, sales.map((row) => row.id)))
+      .groupBy(saleItem.medicineId, saleItem.medicineName)
+      .orderBy(desc(totalQuantity))
+      .limit(5);
+
+    return rows.map((row) => ({
+      medicine_id: row.medicine_id,
+      medicine_name: row.medicine_name,
+      quantity: row.quantity,
+    }));
   },
 };
